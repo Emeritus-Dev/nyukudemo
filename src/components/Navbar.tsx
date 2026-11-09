@@ -1,7 +1,7 @@
 import React from 'react';
 import { Sun, Moon, ShoppingBag, User } from 'lucide-react';
-
 export type NavigationPage = 'home' | 'shop' | 'sale' | 'about' | 'profile';
+
 
 export interface NavbarProps {
   currentPage: NavigationPage;

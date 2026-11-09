@@ -8,12 +8,14 @@ export interface ProductImages {
   folded?: string;
   side?: string;
   back?: string;
+  angle?: string;
+  close?: string;
 }
 
 export interface Product {
   id: number;
   title: string;
-  category: 'T-Shirts' | 'Hoodies & Sweats' | 'Shorts' | 'Accessories';
+  category: 'T-Shirts' | 'Hoodies & Sweats' | 'Shorts' | 'Accessories' | 'Outerwear' | 'Bottoms' | 'Headwear' | 'Drinkware' | 'Club & Leisure';
   gender: 'Men' | 'Women' | 'Unisex';
   price: string;
   images: ProductImages;
@@ -828,7 +830,7 @@ export const PRODUCTS: Product[] = [
     gender: "Unisex",
     price: "R1,200",
     images: {
-      front: "/nyuku-item-3.png"
+      front: "/nyuku-vest-black-front.png"
     },
     description: "Structured outerwear piece with custom matte black metal hardware and tonal embroidery accents across the spine.",
     material: "Durable Nylon Shell with Cotton Lining",
@@ -847,7 +849,10 @@ export const PRODUCTS: Product[] = [
     gender: "Unisex",
     price: "R600",
     images: {
-      front: "/nyuku-cube-folded.png"
+      front: "/nyuku-cube-front.png",
+      back: "/nyuku-tee-cube-back.png",
+      side: "/nyuku-cube-side.png",
+      folded: "/nyuku-cube-folded.png"
     },
     description: "Monochrome heavyweight streetwear staple showcasing a custom 3D isometric typographic Rubik's cube print. Cut in a boxy, dropped-shoulder silhouette.",
     material: "100% Premium Organic Combed Cotton (260GSM)",
@@ -1071,18 +1076,17 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 5 }
     ]
   },
-
-  // ================= NEW CATALOG ADDITIONS =================
-
   // 53. Slender Fieldbar Cooler Box
   {
     id: 57,
     title: "NYUKU Club 5L Slim Fieldbar Cooler - Forest Green",
-    category: "Accessories",
+    category: "Club & Leisure",
     gender: "Unisex",
     price: "R2,450",
     images: {
-      front: "/nyuku-fieldbar-slim-green-front.png"
+      front: "/nyuku-fieldbar-slim-green-front.png",
+      side: "/nyuku-fieldbar-slim-green-side.png",
+      angle: "/nyuku-fieldbar-slim-green-angle.png"
     },
     colors: ["Forest Green"],
     description: "Handcrafted 5L vertical bar cooler box in satin Forest Green with jewelry-grade polished gold hardware, dual hinge anchors, and genuine full-grain chestnut leather carry strap.",
@@ -1095,7 +1099,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 58,
     title: "NYUKU Everywhere Leather Varsity Jacket - Forest Green",
-    category: "Hoodies & Sweats",
+    category: "Outerwear",
     gender: "Men",
     price: "R3,850",
     images: {
@@ -1117,7 +1121,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 59,
     title: "NYUKU Everywhere Leather Varsity Jacket - Safety Orange",
-    category: "Hoodies & Sweats",
+    category: "Outerwear",
     gender: "Men",
     price: "R3,850",
     images: {
@@ -1204,7 +1208,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 63,
     title: "NYUKU 5-Panel Camper Cap - Cyan Acid Denim",
-    category: "Accessories",
+    category: "Headwear",
     gender: "Unisex",
     price: "R650",
     images: {
@@ -1223,7 +1227,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 64,
     title: "NYUKU 5-Panel Camper Cap - Crimson Red",
-    category: "Accessories",
+    category: "Headwear",
     gender: "Unisex",
     price: "R650",
     images: {
@@ -1242,7 +1246,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 65,
     title: "NYUKU 5-Panel Camper Cap - Washed Black Denim",
-    category: "Accessories",
+    category: "Headwear",
     gender: "Unisex",
     price: "R650",
     images: {
@@ -1261,7 +1265,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 66,
     title: "NYUKU EVERYWHERE Ballistic Canvas Camping Chair",
-    category: "Accessories",
+    category: "Club & Leisure",
     gender: "Unisex",
     price: "R1,450",
     images: {
@@ -1275,8 +1279,88 @@ export const PRODUCTS: Product[] = [
     sizes: [
       { size: "One Size (Foldable Portable)", stock: 25 }
     ]
+  },
+  // 63. Dictionary Sky Hoodie (Slideshow Drop)
+  {
+    id: 70,
+    title: "Dictionary Sky Hoodie",
+    category: "Outerwear",
+    price: "R1,450",
+    description: "Heavyweight sky-blue oversized pullover hoodie with dropped shoulders, kangaroo pouch, and an 8-bit typographic dictionary print across the chest.",
+    material: "450GSM Loopback French Terry",
+    gender: "Unisex",
+    sizes: [
+      { size: "S", stock: 10 },
+      { size: "M", stock: 18 },
+      { size: "L", stock: 14 },
+      { size: "XL", stock: 6 }
+    ],
+    images: {
+      front: "/nyuku-hoodie-dictionary-sky.png",
+      side: "/nyuku-hoodie-definition-blue-side.png",
+      folded: "/nyuku-hoodie-definition-blue-folded.png"
+    }
+  },
+  // 64. Bottlecaps Sage Tee (Slideshow Drop)
+  {
+    id: 71,
+    title: "Bottlecaps Sage Tee",
+    category: "T-Shirts",
+    price: "R850",
+    description: "Heavyweight sage green combed cotton t-shirt with dropped shoulders, featuring oversized overlapping fluted crown soda bottlecaps on the back.",
+    material: "280GSM Combed Cotton",
+    gender: "Unisex",
+    sizes: [
+      { size: "S", stock: 15 },
+      { size: "M", stock: 20 },
+      { size: "L", stock: 15 },
+      { size: "XL", stock: 8 }
+    ],
+    images: {
+      front: "/nyuku-tee-bottlecaps-sage-front.png",
+      back: "/nyuku-tee-bottlecaps-moss.png",
+      side: "/nyuku-tee-bottlecaps-sage-angle.png"
+    }
+  },
+  // 65. Bubble Mascot Sweats (Slideshow Drop)
+  {
+    id: 72,
+    title: "Bubble Mascot Sweats",
+    category: "Bottoms",
+    price: "R1,200",
+    description: "Ultra-wide balloon-cut relaxed sweatpants in jet black loopback fleece featuring raised 3D puff embroidery of the cartoon mascot character letters across the front.",
+    material: "450GSM Loopback French Terry",
+    gender: "Unisex",
+    sizes: [
+      { size: "S", stock: 8 },
+      { size: "M", stock: 16 },
+      { size: "L", stock: 12 },
+      { size: "XL", stock: 6 }
+    ],
+    images: {
+      front: "/nyuku-sweatpants-bubble-noir.png",
+      back: "/nyuku-sweatpants-baggy-black-back.png",
+      angle: "/nyuku-sweatpants-baggy-black-angle.png"
+    }
+  },
+  // 66. Heritage Tennis Cap (Slideshow Drop)
+  {
+    id: 73,
+    title: "Heritage Tennis Cap",
+    category: "Headwear",
+    price: "R480",
+    description: "Vintage unstructured 6-panel dad cap in heavily washed charcoal twill with high-density embroidered tennis club crest on the crown.",
+    material: "Distressed Heavy Cotton Twill",
+    gender: "Unisex",
+    sizes: [
+      { size: "One Size", stock: 50 }
+    ],
+    images: {
+      front: "/nyuku-cap-tennis-heritage-charcoal.png",
+      back: "/nyuku-cap-tennis-back.png",
+      side: "/nyuku-cap-tennis-side.png"
+    }
   }
 ];
 
-export type { Product, ProductSize, ProductImages };
 export default PRODUCTS;

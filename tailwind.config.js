@@ -7,17 +7,8 @@ export default {
   ],
   theme: {
     extend: {
-      colors: {
-        nyuku: {
-          dark: '#070B16',
-          surface: '#0F172A',
-          gold: '#F59E0B',
-          orange: '#FF5A1F',
-        },
-      },
       fontFamily: {
-        sans: ['"Pirata One"', '"UnifrakturMaguntia"', 'cursive', 'serif'],
-        gothic: ['"Pirata One"', '"UnifrakturMaguntia"', 'cursive', 'serif'],
+        gothic: ['"Cinzel"', 'serif'],
       },
     },
   },
