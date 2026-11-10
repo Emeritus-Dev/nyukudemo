@@ -113,20 +113,6 @@ export function App() {
   const CAROUSEL_PIECES = useMemo(
     () => [
       {
-        id: 74,
-        title: 'Club Quilted Puffer Vest',
-        tag: 'Down Outerwear',
-        material: 'Technical Matte Ripstop',
-        img: '/nyuku-puffer-vest-black-bb.png',
-      },
-      {
-        id: 75,
-        title: 'Citrus Rugby Polo',
-        tag: 'Heavy Knit Jersey',
-        material: '320GSM Combed Cotton',
-        img: '/nyuku-rugby-polo-orange-bb.png',
-      },
-      {
         id: 71,
         title: 'Bottlecaps Sage Tee',
         tag: 'Heavy Cotton',
@@ -134,11 +120,11 @@ export function App() {
         img: '/nyuku-tee-bottlecaps-moss.png',
       },
       {
-        id: 58,
-        title: 'Everywhere Varsity Jacket',
-        tag: 'Collector Hero',
-        material: 'Melton Wool & Pebbled Cowhide',
-        img: '/nyuku-varsity-green-tumbler.png',
+        id: 74,
+        title: 'Club Quilted Puffer Vest',
+        tag: 'Down Outerwear',
+        material: 'Technical Matte Ripstop',
+        img: '/nyuku-puffer-vest-black-bb.png',
       },
       {
         id: 70,
@@ -148,11 +134,32 @@ export function App() {
         img: '/nyuku-hoodie-dictionary-sky.png',
       },
       {
+        id: 81,
+        title: 'NYÜKU 3.0 Block Tee - Noir',
+        tag: 'Heavy Graphic Tee',
+        material: '280GSM Combed African Cotton',
+        img: '/nyuku-tee-reflected-black-front-bs.png',
+      },
+      {
         id: 72,
         title: 'Bubble Mascot Sweats',
         tag: 'Baggy Fleece',
         material: '450GSM Loopback Cotton',
         img: '/nyuku-sweatpants-bubble-noir.png',
+      },
+      {
+        id: 75,
+        title: 'Citrus Rugby Polo',
+        tag: 'Heavy Knit Jersey',
+        material: '320GSM Combed Cotton',
+        img: '/nyuku-rugby-polo-orange-bb.png',
+      },
+      {
+        id: 82,
+        title: 'NYÜKU 3.0 Block Tee - Bubble Pink',
+        tag: 'Heavy Graphic Tee',
+        material: '280GSM Combed African Cotton',
+        img: '/nyuku-tee-reflected-pink-front-bs.png',
       },
       {
         id: 73,
@@ -168,11 +175,11 @@ export function App() {
   const totalPieces = CAROUSEL_PIECES.length;
 
   const handlePrevCover = () => {
-    setActiveCoverIndex((prev) => (prev - 1 + totalPieces) % totalPieces);
+    setActiveCoverIndex((prev) => Math.max(0, prev - 1));
   };
 
   const handleNextCover = () => {
-    setActiveCoverIndex((prev) => (prev + 1) % totalPieces);
+    setActiveCoverIndex((prev) => Math.min(totalPieces - 1, prev + 1));
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -247,7 +254,8 @@ export function App() {
           title.includes('varsity') ||
           title.includes('vest') ||
           title.includes('hoodie') ||
-          title.includes('polo')
+          title.includes('polo') ||
+          title.includes('tee')
         );
       }
 
@@ -316,11 +324,9 @@ export function App() {
 
                 <div className="relative w-full max-w-5xl h-[410px] sm:h-[450px] flex items-center justify-center overflow-visible">
                   {CAROUSEL_PIECES.map((piece, index) => {
-                    let offset = index - activeCoverIndex;
-                    if (offset > totalPieces / 2) offset -= totalPieces;
-                    if (offset < -totalPieces / 2) offset += totalPieces;
-
+                    const offset = index - activeCoverIndex;
                     const isCenter = offset === 0;
+
                     const translateX = offset * 240;
                     const translateZ = isCenter ? 130 : -140 - Math.abs(offset) * 65;
                     const rotateY = offset * -26;
@@ -345,6 +351,7 @@ export function App() {
                           opacity,
                           zIndex,
                           filter,
+                          pointerEvents: Math.abs(offset) > 3 ? 'none' : 'auto',
                         }}
                         className={`group absolute w-[230px] sm:w-[280px] aspect-square flex flex-col items-center justify-center transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer ${
                           isCenter ? 'hover:scale-[1.18]' : 'hover:opacity-90'
@@ -386,7 +393,12 @@ export function App() {
                 <button
                   type="button"
                   onClick={handlePrevCover}
-                  className="absolute left-2 sm:left-6 z-40 w-9 h-9 rounded-full border border-slate-300 dark:border-white/10 bg-white/80 dark:bg-white/5 hover:bg-amber-400 hover:text-black hover:border-amber-400 hover:scale-110 active:scale-95 shadow-sm flex items-center justify-center transition-all backdrop-blur-md"
+                  disabled={activeCoverIndex === 0}
+                  className={`absolute left-2 sm:left-6 z-40 w-9 h-9 rounded-full border flex items-center justify-center transition-all backdrop-blur-md ${
+                    activeCoverIndex === 0
+                      ? 'opacity-25 cursor-not-allowed border-slate-300/30 dark:border-white/5'
+                      : 'border-slate-300 dark:border-white/10 bg-white/80 dark:bg-white/5 hover:bg-amber-400 hover:text-black hover:border-amber-400 hover:scale-110 active:scale-95 shadow-sm'
+                  }`}
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
@@ -394,7 +406,12 @@ export function App() {
                 <button
                   type="button"
                   onClick={handleNextCover}
-                  className="absolute right-2 sm:right-6 z-40 w-9 h-9 rounded-full border border-slate-300 dark:border-white/10 bg-white/80 dark:bg-white/5 hover:bg-amber-400 hover:text-black hover:border-amber-400 hover:scale-110 active:scale-95 shadow-sm flex items-center justify-center transition-all backdrop-blur-md"
+                  disabled={activeCoverIndex === totalPieces - 1}
+                  className={`absolute right-2 sm:right-6 z-40 w-9 h-9 rounded-full border flex items-center justify-center transition-all backdrop-blur-md ${
+                    activeCoverIndex === totalPieces - 1
+                      ? 'opacity-25 cursor-not-allowed border-slate-300/30 dark:border-white/5'
+                      : 'border-slate-300 dark:border-white/10 bg-white/80 dark:bg-white/5 hover:bg-amber-400 hover:text-black hover:border-amber-400 hover:scale-110 active:scale-95 shadow-sm'
+                  }`}
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
@@ -583,7 +600,7 @@ export function App() {
 
                 <div className="relative w-full my-8 flex items-center justify-center">
                   <div className="w-full text-center overflow-hidden pointer-events-none select-none">
-                    <span className="font-gothic font-black text-[18vw] leading-none tracking-tight text-white/[0.05] uppercase block">
+                    <span className="font-gothic font-black text-[18vw] leading-none tracking-tighter text-white/[0.07] block uppercase">
                       NYÜKU
                     </span>
                   </div>
@@ -591,7 +608,7 @@ export function App() {
                   <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
                     <img
                       src="/nyuku-varsity-green-tumbler.png"
-                      alt="Everywhere Varsity Cutout"
+                      alt="Everywhere Varsity Jacket Cutout"
                       className="max-h-[360px] sm:max-h-[480px] object-contain drop-shadow-[0_25px_45px_rgba(0,0,0,0.95)]"
                     />
                   </div>
@@ -640,9 +657,9 @@ export function App() {
                   {
                     name: 'Kagiso M.',
                     role: 'Polokwane Member',
-                    piece: 'Everywhere Varsity Jacket',
+                    piece: '3.0 Reflected Block Tee',
                     review:
-                      'The 3D embroidery texture on the corduroy bucket hat and varsity jacket feels truly high-end. Pure luxury weight.',
+                      'The screen print density on the 3.0 mirrored block tee feels truly high-end. Pure luxury weight cotton.',
                   },
                   {
                     name: 'Nandi D.',

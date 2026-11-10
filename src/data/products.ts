@@ -1382,6 +1382,52 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 5 }
     ]
   },
+{
+  id: 81,
+  title: 'NYÜKU 3.0 Reflected Block Tee - Noir',
+  category: 'Heavyweight Graphic Tee',
+  price: 'R850',
+  gender: 'Unisex',
+  description: 'Heavyweight 280GSM combed African cotton featuring the iconic rectangular 3.0 mirrored block typography screen print. Relaxed boxy streetwear fit with structured drop shoulders.',
+  details: [
+    '280GSM 100% Combed African Cotton',
+    'High-density matte screen print graphic',
+    'Thick 1-inch ribbed crewneck collar',
+    'Reinforced double-needle hem & cuffs',
+    'Rooted and authenticated in Zebediela, Limpopo'
+  ],
+  images: {
+    front: '/nyuku-tee-reflected-black-front.png',
+    folded: '/nyuku-tee-reflected-black-folded.png',
+    close: '/nyuku-tee-reflected-black-close.png',
+    back: '/nyuku-tee-reflected-black-back.png',
+  },
+  availableSizes: ['S', 'M', 'L', 'XL', '2XL'],
+},
+{
+  id: 82,
+  title: 'NYÜKU 3.0 Reflected Block Tee - Bubble Pink',
+  category: 'Heavyweight Graphic Tee',
+  price: 'R850',
+  gender: 'Unisex',
+  description: 'Heavyweight 280GSM combed cotton jersey in a vibrant bubble pink colorway, featuring the contrast mirrored 3.0 logo print across the chest.',
+  details: [
+    '280GSM 100% Combed African Cotton',
+    'High-density screen print graphic',
+    'Thick 1-inch ribbed crewneck collar',
+    'Relaxed boxy silhouette',
+    'Rooted and authenticated in Zebediela, Limpopo'
+  ],
+  images: {
+    front: '/nyuku-tee-reflected-pink-front.png',
+    folded: '/nyuku-tee-reflected-pink-folded.png',
+    close: '/nyuku-tee-reflected-pink-close.png',
+    back: '/nyuku-tee-reflected-pink-back.png',
+  },
+  availableSizes: ['S', 'M', 'L', 'XL', '2XL'],
+},
+
+
   // 68. Citrus Athletic Rugby Polo (New Arrival)
   {
     id: 75,

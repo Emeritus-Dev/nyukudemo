@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Sparkles,
   MapPin,
@@ -11,7 +11,9 @@ import {
   Facebook,
   GraduationCap,
   Calendar,
-  Quote
+  Quote,
+  Images,
+  ChevronDown
 } from 'lucide-react';
 
 interface AboutProps {
@@ -20,10 +22,16 @@ interface AboutProps {
 }
 
 export function About({ onNavigateShop, isDark = true }: AboutProps) {
-  const EVENT_CONTACTS = [
-    { name: 'Tolique (Founder)', role: 'VIP & Table Reservations', number: '+27682910153', display: '068 291 0153' },
-    { name: 'Tex', role: 'Syndicate Guestlist', number: '+27679862215', display: '067 986 2215' },
-    { name: 'Battise', role: 'Ticketing & Activations', number: '+27812750303', display: '081 275 0303' },
+  const [isGalleryExpanded, setIsGalleryExpanded] = useState(false);
+
+  const GALLERY_IMAGES = [
+    { src: '/nyuku-gallery-poolside.jpg', title: 'Poolside Marquee Setup' },
+    { src: '/nyuku-gallery-marquee-water.jpg', title: 'Reflections & Lights' },
+    { src: '/nyuku-gallery-funday-zorb.jpg', title: 'Nyüku Funday Zorb Action' },
+    { src: '/nyuku-gallery-poolside-night.jpg', title: 'Night Vibe & Marquee' },
+    { src: '/nyuku-gallery-smoke-show.jpg', title: 'Day Club Smoke Flares' },
+    { src: '/nyuku-gallery-bounce-castle.jpg', title: 'Community Funday Play' },
+    { src: '/nyuku-gallery-backdrop.jpg', title: 'The Red Carpet Backdrop' },
   ];
 
   return (
@@ -49,7 +57,7 @@ export function About({ onNavigateShop, isDark = true }: AboutProps) {
           <div className="w-28 h-2 mx-auto bg-amber-400 rounded-full blur-[0.5px] -mt-2" />
 
           <p className="text-sm sm:text-base font-mono text-zinc-300 max-w-2xl mx-auto leading-relaxed">
-            From the red-soil citrus groves of Zebediela, Limpopo, to the streets of Johannesburg. We craft heavyweight garments and curate poolside subculture.
+            From the red-soil citrus groves of Zebediela, Limpopo. We craft heavyweight garments and curate poolside subculture.
           </p>
 
           <div className="pt-2">
@@ -185,6 +193,93 @@ export function About({ onNavigateShop, isDark = true }: AboutProps) {
         </div>
       </section>
 
+      <section className="space-y-6 pt-10 border-t border-white/10">
+        <div className="text-center space-y-3 max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-400/30 bg-black/70 backdrop-blur-md text-[11px] font-mono uppercase tracking-widest text-amber-400 font-bold">
+            <Images className="w-3.5 h-3.5" />
+            <span>Culture & Community Gallery</span>
+          </div>
+          <h2 className="font-gothic text-3xl sm:text-5xl font-black uppercase tracking-tight text-slate-900 dark:text-white">
+            Moments in Motion
+          </h2>
+          <p className="text-xs sm:text-sm font-sans text-slate-600 dark:text-zinc-400 leading-relaxed">
+            Tap the stacked preview card below to unfold our complete visual archive of poolside day clubs and community gatherings.
+          </p>
+        </div>
+
+        {!isGalleryExpanded ? (
+          <div
+            onClick={() => setIsGalleryExpanded(true)}
+            className="group relative max-w-2xl mx-auto cursor-pointer select-none py-4"
+          >
+            <div className="absolute inset-x-4 -bottom-3 h-full rounded-3xl bg-zinc-900/60 border border-white/10 rotate-3 transform transition-transform group-hover:rotate-6" />
+            <div className="absolute inset-x-2 -bottom-1.5 h-full rounded-3xl bg-zinc-900/80 border border-white/15 -rotate-2 transform transition-transform group-hover:-rotate-3" />
+
+            <div className="relative rounded-3xl overflow-hidden border-2 border-amber-400/50 bg-zinc-950 shadow-2xl aspect-[16/9] flex items-center justify-center p-6">
+              <img
+                src={GALLERY_IMAGES[0].src}
+                alt="Gallery Preview"
+                className="absolute inset-0 w-full h-full object-cover filter brightness-[0.45] group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+
+              <div className="relative z-10 text-center space-y-2">
+                <span className="px-4 py-1 rounded-full border border-amber-400/40 bg-amber-400/15 text-amber-400 font-mono text-[10px] font-bold uppercase tracking-widest">
+                  ARCHIVE VAULT ✦ 7 FRAMES
+                </span>
+                <h3 className="font-gothic text-2xl sm:text-3xl font-black uppercase text-white tracking-wider">
+                  TAP TO UNFOLD
+                </h3>
+                <p className="text-[11px] font-mono text-zinc-300 uppercase tracking-widest flex items-center justify-center gap-1 pt-1">
+                  <span>Explore Visual Grid</span>
+                  <ChevronDown className="w-4 h-4 text-amber-400 animate-bounce" />
+                </p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-6 animate-fadeIn">
+            <div className="flex justify-center pb-2">
+              <button
+                onClick={() => setIsGalleryExpanded(false)}
+                className="px-5 py-2 rounded-full border border-amber-400/40 bg-amber-400/10 hover:bg-amber-400 hover:text-black text-amber-400 text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center gap-2 shadow-md"
+              >
+                <span>Collapse Gallery</span>
+                <ChevronDown className="w-4 h-4 rotate-180" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {GALLERY_IMAGES.map((img, idx) => (
+                <div
+                  key={idx}
+                  className={`group relative rounded-3xl overflow-hidden border border-white/10 bg-zinc-900 shadow-xl aspect-[4/3] ${
+                    idx === 0 ? 'sm:col-span-2 lg:col-span-2 aspect-[16/9]' : ''
+                  }`}
+                >
+                  <img
+                    src={img.src}
+                    alt={img.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out filter contrast-[1.05]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                    <div>
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400 font-bold block">
+                        Archival Frame 0{idx + 1}
+                      </span>
+                      <h4 className="font-gothic text-lg sm:text-xl font-bold uppercase text-white">
+                        {img.title}
+                      </h4>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* WHY IT WORKS SECTION WITH BACKGROUND IMAGES & SHADESOFCOLORS EVENTS */}
       <section className="space-y-12 pt-8">
         <div className="text-center space-y-2">
           <h2 className="font-gothic text-3xl sm:text-5xl font-black uppercase tracking-tight text-slate-900 dark:text-white">
@@ -194,40 +289,72 @@ export function About({ onNavigateShop, isDark = true }: AboutProps) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="rounded-3xl p-8 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/70 shadow-sm hover:shadow-xl transition-all text-center space-y-4">
-            <div className="w-16 h-16 mx-auto rounded-2xl bg-amber-400/15 border border-amber-400/30 flex items-center justify-center text-amber-600 dark:text-amber-400">
-              <Flame className="w-8 h-8" />
+          <div className="group relative rounded-3xl p-8 border border-slate-200 dark:border-white/10 overflow-hidden shadow-lg hover:shadow-2xl transition-all text-center flex flex-col justify-between min-h-[340px]">
+            <img
+              src="/nyuku-tent-setup.jpg"
+              alt="Heavyweight African Cotton"
+              className="absolute inset-0 w-full h-full object-cover filter brightness-[0.25] group-hover:scale-110 group-hover:brightness-[0.20] transition-all duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/40 pointer-events-none" />
+
+            <div className="relative z-10 space-y-4 my-auto">
+              <div className="w-16 h-16 mx-auto rounded-2xl bg-amber-400/20 border border-amber-400/40 backdrop-blur-md flex items-center justify-center text-amber-400 shadow-md group-hover:scale-110 transition-transform">
+                <Flame className="w-8 h-8" />
+              </div>
+              <h3 className="font-gothic text-xl font-bold text-white uppercase tracking-wide">
+                Heavyweight African Cotton
+              </h3>
+              <p className="text-xs font-sans text-zinc-300 leading-relaxed max-w-xs mx-auto">
+                We insist on dense 280GSM–320GSM combed jersey and 450GSM French Terry loopback. Silhouettes that maintain structured drape wash after wash.
+              </p>
             </div>
-            <h3 className="font-gothic text-lg font-bold text-slate-900 dark:text-white uppercase">
-              Heavyweight African Cotton
-            </h3>
-            <p className="text-xs font-sans text-slate-600 dark:text-zinc-400 leading-relaxed">
-              We insist on dense 280GSM–320GSM combed jersey and 450GSM French Terry loopback. Silhouettes that maintain structured drape wash after wash.
-            </p>
           </div>
 
-          <div className="rounded-3xl p-8 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/70 shadow-sm hover:shadow-xl transition-all text-center space-y-4">
-            <div className="w-16 h-16 mx-auto rounded-2xl bg-amber-400/15 border border-amber-400/30 flex items-center justify-center text-amber-600 dark:text-amber-400">
-              <ShieldCheck className="w-8 h-8" />
+          <div className="group relative rounded-3xl p-8 border border-slate-200 dark:border-white/10 overflow-hidden shadow-lg hover:shadow-2xl transition-all text-center flex flex-col justify-between min-h-[340px]">
+            <img
+              src="/nyuku-tumblers-bar.jpg"
+              alt="Sealed Archival Batches"
+              className="absolute inset-0 w-full h-full object-cover filter brightness-[0.25] group-hover:scale-110 group-hover:brightness-[0.20] transition-all duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/40 pointer-events-none" />
+
+            <div className="relative z-10 space-y-4 my-auto">
+              <div className="w-16 h-16 mx-auto rounded-2xl bg-amber-400/20 border border-amber-400/40 backdrop-blur-md flex items-center justify-center text-amber-400 shadow-md group-hover:scale-110 transition-transform">
+                <ShieldCheck className="w-8 h-8" />
+              </div>
+              <h3 className="font-gothic text-xl font-bold text-white uppercase tracking-wide">
+                Sealed Archival Batches
+              </h3>
+              <p className="text-xs font-sans text-zinc-300 leading-relaxed max-w-xs mx-auto">
+                Every drop is strictly capped in quantity and authenticated. Once a batch is sealed, it transitions to the private syndicate archive.
+              </p>
             </div>
-            <h3 className="font-gothic text-lg font-bold text-slate-900 dark:text-white uppercase">
-              Sealed Archival Batches
-            </h3>
-            <p className="text-xs font-sans text-slate-600 dark:text-zinc-400 leading-relaxed">
-              Every drop is strictly capped in quantity and authenticated. Once a batch is sealed, it transitions to the private syndicate archive.
-            </p>
           </div>
 
-          <div className="rounded-3xl p-8 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/70 shadow-sm hover:shadow-xl transition-all text-center space-y-4">
-            <div className="w-16 h-16 mx-auto rounded-2xl bg-amber-400/15 border border-amber-400/30 flex items-center justify-center text-amber-600 dark:text-amber-400">
-              <Compass className="w-8 h-8" />
+          <div className="group relative rounded-3xl p-8 border border-amber-400/30 overflow-hidden shadow-lg hover:shadow-2xl transition-all text-center flex flex-col justify-between min-h-[340px]">
+            <img
+              src="/nyuku-gallery-smoke-show.jpg"
+              alt="ShadesOfColors Experience"
+              className="absolute inset-0 w-full h-full object-cover filter brightness-[0.35] group-hover:scale-110 group-hover:brightness-[0.25] transition-all duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/40 pointer-events-none" />
+
+            <div className="relative z-10 space-y-4 my-auto">
+              <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-amber-400/30 via-pink-500/30 to-blue-500/30 border border-amber-400/50 backdrop-blur-md flex items-center justify-center text-amber-400 shadow-md group-hover:scale-110 transition-transform">
+                <Compass className="w-8 h-8" />
+              </div>
+              <div className="space-y-1">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400 font-bold block">
+                  Cultural Activations
+                </span>
+                <h3 className="font-gothic text-xl font-bold text-white uppercase tracking-wide">
+                  ShadesOfColors Experience
+                </h3>
+              </div>
+              <p className="text-xs font-sans text-zinc-300 leading-relaxed max-w-xs mx-auto">
+                Signature poolside gatherings, day clubs, and outdoor music experiences where vibrant colors, streetwear culture, and community energy collide.
+              </p>
             </div>
-            <h3 className="font-gothic text-lg font-bold text-slate-900 dark:text-white uppercase">
-              Live Cultural Gatherings
-            </h3>
-            <p className="text-xs font-sans text-slate-600 dark:text-zinc-400 leading-relaxed">
-              Our pieces exist in harmony with our poolside activations, day clubs, and community music festivals across South Africa.
-            </p>
           </div>
         </div>
       </section>
@@ -255,25 +382,50 @@ export function About({ onNavigateShop, isDark = true }: AboutProps) {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {EVENT_CONTACTS.map((contact) => (
-                <a
-                  key={contact.name}
-                  href={`https://wa.me/${contact.number.replace('+', '')}?text=Hi%20${contact.name},%20I%20would%20like%20to%20reserve%20tickets%20for%20the%20Nyüku%20Event.`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group p-4 rounded-2xl border border-white/10 bg-white/5 hover:border-emerald-400/60 hover:bg-emerald-400/10 transition-all flex flex-col justify-between space-y-2"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-white group-hover:text-emerald-400 font-gothic">
-                      {contact.name}
-                    </span>
-                    <MessageCircle className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
-                  </div>
-                  <span className="text-[10px] font-mono text-zinc-400">{contact.role}</span>
-                  <span className="text-xs font-mono font-bold text-emerald-400">{contact.display}</span>
-                </a>
-              ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <a
+                href="https://wa.me/27682910153?text=Hi%20Tolique,%20I%20would%20like%20to%20reserve%20tickets%20for%20the%20Nyüku%20Event."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group p-5 rounded-2xl border border-white/10 bg-white/5 hover:border-emerald-400/60 hover:bg-emerald-400/10 transition-all flex flex-col justify-between space-y-3"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold text-white group-hover:text-emerald-400 font-gothic">
+                    Tolique (Founder)
+                  </span>
+                  <MessageCircle className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
+                </div>
+                <span className="text-[10px] font-mono text-zinc-400">VIP & Table Reservations</span>
+                <span className="text-xs font-mono font-bold text-emerald-400">068 291 0153</span>
+              </a>
+
+              <div className="group p-5 rounded-2xl border border-white/10 bg-white/5 hover:border-emerald-400/60 hover:bg-emerald-400/10 transition-all flex flex-col justify-between space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold text-white group-hover:text-emerald-400 font-gothic">
+                    Tshegofatso (EmeritusDev)
+                  </span>
+                  <MessageCircle className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
+                </div>
+                <span className="text-[10px] font-mono text-zinc-400">Lead Platform Engineer</span>
+                <div className="flex flex-col gap-1.5 pt-1">
+                  <a
+                    href="https://wa.me/27795684702?text=Hi%20Tshegofatso,%20reaching%20out%20regarding%20Nyüku."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-mono font-bold text-emerald-400 hover:text-emerald-300 transition-colors flex items-center justify-between"
+                  >
+                    <span>WhatsApp Music</span>
+                    <span>079 568 4702</span>
+                  </a>
+                  <a
+                    href="tel:+27615208170"
+                    className="text-xs font-mono font-bold text-emerald-400 hover:text-emerald-300 transition-colors flex items-center justify-between"
+                  >
+                    <span>Contact Number</span>
+                    <span>061 520 8170</span>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -362,35 +514,38 @@ export function About({ onNavigateShop, isDark = true }: AboutProps) {
                 Connect Directly With The Founder:
               </p>
 
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-3">
                 <a
                   href="https://www.instagram.com/tolique_sethosa/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-pink-500/30 bg-pink-500/10 hover:bg-gradient-to-r hover:from-pink-500 hover:to-purple-600 hover:text-white transition-all text-xs font-mono font-bold tracking-wider uppercase text-pink-400 shadow-md hover:scale-105"
+                  aria-label="Instagram"
+                  title="Instagram @tolique_sethosa"
+                  className="w-12 h-12 rounded-full border border-pink-500/30 bg-pink-500/10 hover:bg-gradient-to-r hover:from-pink-500 hover:to-purple-600 hover:text-white transition-all flex items-center justify-center text-pink-400 shadow-md hover:scale-110 active:scale-95"
                 >
-                  <Instagram className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                  <span>Instagram @tolique_sethosa</span>
+                  <Instagram className="w-5 h-5" />
                 </a>
 
                 <a
                   href="https://www.facebook.com/tshegofatjo.sethosa"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-blue-500/30 bg-blue-500/10 hover:bg-blue-600 hover:text-white transition-all text-xs font-mono font-bold tracking-wider uppercase text-blue-400 shadow-md hover:scale-105"
+                  aria-label="Facebook"
+                  title="Facebook Profile"
+                  className="w-12 h-12 rounded-full border border-blue-500/30 bg-blue-500/10 hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center text-blue-400 shadow-md hover:scale-110 active:scale-95"
                 >
-                  <Facebook className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                  <span>Facebook Profile</span>
+                  <Facebook className="w-5 h-5" />
                 </a>
 
                 <a
                   href="https://wa.me/27682910153?text=Hi%20Tolique,%20reaching%20out%20to%20you%20directly%20from%20the%20Nyüku%20Official%20Platform."
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-600 hover:text-white transition-all text-xs font-mono font-bold tracking-wider uppercase text-emerald-400 shadow-md hover:scale-105"
+                  aria-label="WhatsApp"
+                  title="WhatsApp Concierge"
+                  className="w-12 h-12 rounded-full border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center text-emerald-400 shadow-md hover:scale-110 active:scale-95"
                 >
-                  <MessageCircle className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                  <span>WhatsApp Concierge</span>
+                  <MessageCircle className="w-5 h-5" />
                 </a>
               </div>
             </div>
