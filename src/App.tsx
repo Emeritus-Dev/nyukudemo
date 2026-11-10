@@ -2,11 +2,21 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Navbar } from './components/Navbar';
 import type { NavigationPage } from './components/Navbar';
 import { Profile } from './pages/profile/Profile';
+import { About } from './pages/About';
 import { CartDrawer } from './components/CartDrawer';
 import { ProductModal } from './components/ProductModal';
+import { AuthModal } from './components/AuthModal';
 import { PRODUCTS } from './data/products';
 import type { Product } from './data/products';
-import { ArrowRight, SlidersHorizontal, Sun, Moon, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
+import {
+  SlidersHorizontal,
+  ChevronLeft,
+  ChevronRight,
+  ShoppingBag,
+  Flame,
+  Compass,
+  ArrowUpRight,
+} from 'lucide-react';
 
 type CatalogCategoryFilter = 'all' | 'men' | 'women' | 'accessories' | 'club-leisure';
 
@@ -16,16 +26,16 @@ export function App() {
   const [cart, setCart] = useState<{ product: Product; size: string; quantity: number }[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // Interactive Product Modal State
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // 3D Carousel Stage State
-  const [activeCoverIndex, setActiveCoverIndex] = useState(2); // Centers the varsity jacket by default
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+
+  const [activeCoverIndex, setActiveCoverIndex] = useState(3);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartX, setDragStartX] = useState(0);
 
-  // Read saved theme from localStorage, default to dark
   const [isDark, setIsDark] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('nyuku_theme');
@@ -34,7 +44,6 @@ export function App() {
     return true;
   });
 
-  // Apply theme to the entire document
   useEffect(() => {
     const root = document.documentElement;
     if (isDark) {
@@ -57,6 +66,11 @@ export function App() {
   const handleOpenProduct = (product: Product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
+  };
+
+  const handleOpenAuth = (mode: 'login' | 'register') => {
+    setAuthMode(mode);
+    setIsAuthOpen(true);
   };
 
   const handleAddToCart = (product: Product, size = 'M') => {
@@ -96,59 +110,71 @@ export function App() {
 
   const totalCartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
-  // 3D Carousel Lineup with new newly created high-res items
-  const CAROUSEL_PIECES = useMemo(() => [
-    {
-      id: 70,
-      title: "Dictionary Sky Hoodie",
-      tag: "Fleece Outerwear",
-      price: "R1,450",
-      material: "450GSM French Terry",
-      img: "/nyuku-hoodie-dictionary-sky.png",
-    },
-    {
-      id: 71,
-      title: "Bottlecaps Sage Tee",
-      tag: "Heavy Cotton",
-      price: "R850",
-      material: "280GSM Combed Cotton",
-      img: "/nyuku-tee-bottlecaps-moss.png",
-    },
-    {
-      id: 58,
-      title: "Everywhere Varsity Jacket",
-      tag: "Collector Hero",
-      price: "R3,850",
-      material: "Melton Wool & Pebbled Cowhide",
-      img: "/nyuku-varsity-green-tumbler.png",
-    },
-    {
-      id: 72,
-      title: "Bubble Mascot Sweats",
-      tag: "Baggy Fleece",
-      price: "R1,200",
-      material: "450GSM Loopback Cotton",
-      img: "/nyuku-sweatpants-bubble-noir.png",
-    },
-    {
-      id: 73,
-      title: "Heritage Tennis Cap",
-      tag: "Washed Headwear",
-      price: "R480",
-      material: "Distressed Cotton Twill",
-      img: "/nyuku-cap-tennis-heritage-charcoal.png",
-    },
-    {
-      id: 5,
-      title: "Isometric Cube Tee",
-      tag: "Heavy Cotton",
-      price: "R600",
-      material: "280GSM Compact Cotton",
-      img: "/nyuku-tee-cube-back.png",
-    },
-  ], []);
+  const CAROUSEL_PIECES = useMemo(
+    () => [
+      {
+        id: 74,
+        title: 'Club Quilted Puffer Vest',
+        tag: 'Down Outerwear',
+        material: 'Technical Matte Ripstop',
+        img: '/nyuku-puffer-vest-black-bb.png',
+      },
+      {
+        id: 75,
+        title: 'Citrus Rugby Polo',
+        tag: 'Heavy Knit Jersey',
+        material: '320GSM Combed Cotton',
+        img: '/nyuku-rugby-polo-orange-bb.png',
+      },
+      {
+        id: 71,
+        title: 'Bottlecaps Sage Tee',
+        tag: 'Heavy Cotton',
+        material: '280GSM Combed Cotton',
+        img: '/nyuku-tee-bottlecaps-moss.png',
+      },
+      {
+        id: 58,
+        title: 'Everywhere Varsity Jacket',
+        tag: 'Collector Hero',
+        material: 'Melton Wool & Pebbled Cowhide',
+        img: '/nyuku-varsity-green-tumbler.png',
+      },
+      {
+        id: 70,
+        title: 'Dictionary Sky Hoodie',
+        tag: 'Fleece Outerwear',
+        material: '450GSM French Terry',
+        img: '/nyuku-hoodie-dictionary-sky.png',
+      },
+      {
+        id: 72,
+        title: 'Bubble Mascot Sweats',
+        tag: 'Baggy Fleece',
+        material: '450GSM Loopback Cotton',
+        img: '/nyuku-sweatpants-bubble-noir.png',
+      },
+      {
+        id: 73,
+        title: 'Heritage Tennis Cap',
+        tag: 'Washed Headwear',
+        material: 'Distressed Cotton Twill',
+        img: '/nyuku-cap-tennis-heritage-charcoal.png',
+      },
+    ],
+    []
+  );
 
-  // Drag / Swipe handling
+  const totalPieces = CAROUSEL_PIECES.length;
+
+  const handlePrevCover = () => {
+    setActiveCoverIndex((prev) => (prev - 1 + totalPieces) % totalPieces);
+  };
+
+  const handleNextCover = () => {
+    setActiveCoverIndex((prev) => (prev + 1) % totalPieces);
+  };
+
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
     setDragStartX(e.clientX);
@@ -157,10 +183,10 @@ export function App() {
   const handleMouseUp = (e: React.MouseEvent) => {
     if (!isDragging) return;
     const diff = e.clientX - dragStartX;
-    if (diff > 40) {
-      setActiveCoverIndex((prev) => Math.max(0, prev - 1));
-    } else if (diff < -40) {
-      setActiveCoverIndex((prev) => Math.min(CAROUSEL_PIECES.length - 1, prev + 1));
+    if (diff > 45) {
+      handlePrevCover();
+    } else if (diff < -45) {
+      handleNextCover();
     }
     setIsDragging(false);
   };
@@ -172,13 +198,12 @@ export function App() {
   const handleTouchEnd = (e: React.TouchEvent) => {
     const diff = e.changedTouches[0].clientX - dragStartX;
     if (diff > 35) {
-      setActiveCoverIndex((prev) => Math.max(0, prev - 1));
+      handlePrevCover();
     } else if (diff < -35) {
-      setActiveCoverIndex((prev) => Math.min(CAROUSEL_PIECES.length - 1, prev + 1));
+      handleNextCover();
     }
   };
 
-  // Filter products based on selected category in the Shop
   const filteredProducts = useMemo(() => {
     if (selectedCategory === 'all') return PRODUCTS;
 
@@ -188,12 +213,13 @@ export function App() {
 
       if (selectedCategory === 'club-leisure') {
         return (
+          title.includes('vest') ||
+          title.includes('polo') ||
+          title.includes('rugby') ||
           title.includes('chair') ||
           title.includes('fieldbar') ||
-          title.includes('cooler') ||
-          title.includes('cup') ||
-          title.includes('towel') ||
-          cat.includes('outdoor') ||
+          title.includes('tumbler') ||
+          cat.includes('accessories') ||
           cat.includes('club')
         );
       }
@@ -202,8 +228,8 @@ export function App() {
         return (
           title.includes('cap') ||
           title.includes('hat') ||
-          title.includes('beanie') ||
-          title.includes('bag') ||
+          title.includes('tumbler') ||
+          title.includes('towel') ||
           title.includes('tote') ||
           cat.includes('accessories') ||
           cat.includes('headwear')
@@ -211,12 +237,7 @@ export function App() {
       }
 
       if (selectedCategory === 'women') {
-        return (
-          product.gender === 'Women' ||
-          product.gender === 'Unisex' ||
-          title.includes('crop') ||
-          title.includes('rugby')
-        );
+        return product.gender === 'Women' || product.gender === 'Unisex';
       }
 
       if (selectedCategory === 'men') {
@@ -224,10 +245,9 @@ export function App() {
           product.gender === 'Men' ||
           product.gender === 'Unisex' ||
           title.includes('varsity') ||
-          title.includes('jacket') ||
-          title.includes('jersey') ||
+          title.includes('vest') ||
           title.includes('hoodie') ||
-          title.includes('sweat')
+          title.includes('polo')
         );
       }
 
@@ -236,10 +256,11 @@ export function App() {
   }, [selectedCategory]);
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 flex flex-col justify-between ${
-      isDark ? 'bg-black text-white' : 'bg-slate-50 text-slate-900'
-    }`}>
-      {/* Frosted Glass Navbar */}
+    <div
+      className={`min-h-screen transition-colors duration-300 flex flex-col justify-between ${
+        isDark ? 'bg-black text-white' : 'bg-slate-50 text-slate-900'
+      }`}
+    >
       <Navbar
         currentPage={currentPage}
         onNavigate={(page) => {
@@ -250,179 +271,61 @@ export function App() {
         onOpenCart={() => setIsCartOpen((prev) => !prev)}
         isDark={isDark}
         onToggleTheme={handleToggleTheme}
-        onOpenAuth={(mode) => alert(`Auth Modal: ${mode.toUpperCase()} window ready.`)}
+        onOpenAuth={(mode) => handleOpenAuth(mode)}
       />
 
-      {/* Main App Surfaces */}
       <main className="flex-grow">
-
-        {/* ================= PAGE 1: HOME (3D DIMENSIONAL SHOWCASE) ================= */}
         {currentPage === 'home' && (
-          <div className="pt-20 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-16 overflow-hidden select-none">
-
-            {/* 1. HERO SECTION: 3D DIMENSIONAL COVERFLOW STAGE */}
-            <section className="relative pt-4 pb-8">
-
-              {/* Ambient radial background illumination */}
+          <div className="pt-24 pb-24 space-y-16 overflow-hidden select-none">
+            <section className="relative pt-6 pb-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
               <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[34rem] h-[28rem] bg-emerald-500/15 rounded-full blur-[130px] pointer-events-none" />
               <div className="absolute top-6 right-10 w-72 h-72 bg-amber-500/10 rounded-full blur-[100px] pointer-events-none" />
 
-              {/* Top Row: Editorial Headline & Floating Header Pill */}
-              <div className="relative z-20 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mb-2">
+              <div className="relative z-20 text-center max-w-3xl mx-auto space-y-4 mb-4">
+                <h1 className="font-gothic text-5xl sm:text-7xl md:text-8xl font-black tracking-tight text-zinc-900 dark:text-white leading-[1.05] select-none">
+                  Make It A{' '}
+                  <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-500 drop-shadow-[0_0_26px_rgba(251,191,36,0.4)]">
+                    Nyüku Day.
+                    <span className="absolute -top-1 -right-4 text-xs font-mono font-bold text-amber-400 animate-pulse">
+                      ✦
+                    </span>
+                  </span>
+                </h1>
 
-                <div className="lg:col-span-7 space-y-3 text-left">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/[0.04] backdrop-blur-md text-[10px] font-mono">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-zinc-300 font-bold uppercase tracking-wider">High Summer Drop: Sealed Batch 04</span>
-                  </div>
-
-                  <h1 className="font-gothic text-3xl sm:text-5xl font-bold tracking-tight text-zinc-900 dark:text-white leading-[1.05]">
-                    Breath Natural.
-                  </h1>
-                  <p className={`text-xs max-w-md leading-relaxed ${isDark ? 'text-zinc-400' : 'text-slate-600'}`}>
-                    The Nyüku Syndicate dimensional archive. Swipe sideways to cycle through collector drops, or hover any piece to bring it forward into depth focus.
-                  </p>
-                </div>
-
-                {/* Top Right Mini Capsule Card (Cream Bucket Hat) */}
-                <div className="lg:col-span-5 flex justify-end">
-                  <div
-                    onClick={() => {
-                      const p = PRODUCTS.find((item) => item.title.includes('Bucket') || item.id === 26);
-                      if (p) handleOpenProduct(p);
-                    }}
-                    className={`group w-full max-w-[260px] rounded-2xl p-3 border transition-all duration-300 cursor-pointer backdrop-blur-xl ${
-                      isDark
-                        ? 'border-white/10 bg-white/[0.03] hover:border-amber-400/60 hover:bg-white/[0.06]'
-                        : 'border-slate-200 bg-white/80 hover:border-amber-400 shadow-md'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 shrink-0 relative flex items-center justify-center">
-                        <img
-                          src="/nyuku-bucket-cream.png"
-                          alt="Cream Bucket Hat"
-                          className="w-full h-full object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-300"
-                        />
-                      </div>
-                      <div className="text-left flex-grow">
-                        <span className="text-[9px] font-mono uppercase tracking-wider text-zinc-400">Headwear</span>
-                        <h4 className="text-xs font-bold text-zinc-900 dark:text-white line-clamp-1">Corduroy Bucket</h4>
-                        <p className="font-mono font-bold text-amber-500 text-xs mt-0.5">R320</p>
-                        <span className="text-[9px] text-zinc-400 group-hover:text-amber-400 font-semibold flex items-center gap-1 mt-0.5">
-                          Inspect →
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
+                <p className="text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed text-slate-700 dark:text-zinc-300 font-sans tracking-wide">
+                  <span className="text-slate-900 dark:text-white font-bold">
+                    Good paper, heavier cotton, better energy.
+                  </span>{' '}
+                  Dimensional craftsmanship built for everyday motion. Swipe to explore the drop archive.
+                </p>
               </div>
 
-              {/* 3D PERSPECTIVE STAGE */}
               <div
-                className="relative mt-2 min-h-[440px] sm:min-h-[480px] flex items-center justify-center cursor-grab active:cursor-grabbing"
+                className="relative mt-2 min-h-[460px] sm:min-h-[500px] flex items-center justify-center cursor-grab active:cursor-grabbing"
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
-                style={{ perspective: '1100px' }}
+                style={{ perspective: '1200px' }}
               >
-                {/* Pill Section Header */}
-                <div className="absolute -top-3 z-40 px-4 py-1 rounded-full border border-white/10 bg-white/[0.04] backdrop-blur-md">
-                  <span className="text-[11px] font-mono font-bold tracking-widest uppercase text-zinc-300">
+                <div className="absolute -top-3 z-40 px-4 py-1.5 rounded-full border border-slate-300/80 dark:border-white/10 bg-white/80 dark:bg-white/[0.04] backdrop-blur-md shadow-sm">
+                  <span className="text-[11px] font-mono font-bold tracking-widest uppercase text-slate-800 dark:text-zinc-300">
                     OUR TRENDY ARCHIVE
                   </span>
                 </div>
 
-                {/* Left Floating Capsule: Frosted Cup */}
-                <div className="hidden lg:block absolute left-0 top-16 z-30 w-64 pointer-events-auto">
-                  <div
-                    onClick={() => {
-                      const p = PRODUCTS.find((item) => item.id === 35);
-                      if (p) handleOpenProduct(p);
-                    }}
-                    className={`group rounded-2xl p-3 border transition-all duration-300 cursor-pointer backdrop-blur-xl flex items-center gap-3 ${
-                      isDark
-                        ? 'border-white/10 bg-white/[0.03] hover:border-amber-400/60 hover:bg-white/[0.06]'
-                        : 'border-slate-200 bg-white/80 hover:border-amber-400 shadow-lg'
-                    }`}
-                  >
-                    <div className="w-12 h-16 shrink-0 flex items-center justify-center">
-                      <img
-                        src="/nyuku-tumbler-frosted.png"
-                        alt="Frosted Tumbler"
-                        className="w-full h-full object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-300"
-                      />
-                    </div>
-                    <div className="text-left">
-                      <span className="text-[9px] font-mono uppercase text-zinc-400">Club Vessel</span>
-                      <h4 className="text-xs font-bold text-zinc-900 dark:text-white">Frosted Character Cup</h4>
-                      <p className="font-mono font-bold text-amber-500 text-xs mt-0.5">R120</p>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const p = PRODUCTS.find((item) => item.id === 35);
-                          if (p) handleAddToCart(p);
-                        }}
-                        className="mt-1.5 px-2.5 py-0.5 rounded-full bg-amber-400 text-black text-[9px] font-black uppercase tracking-wider"
-                      >
-                        Buy Piece
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Right Floating Capsule: 5-Panel Cap */}
-                <div className="hidden lg:block absolute right-0 bottom-12 z-30 w-64 pointer-events-auto">
-                  <div
-                    onClick={() => {
-                      const p = PRODUCTS.find((item) => item.id === 65);
-                      if (p) handleOpenProduct(p);
-                    }}
-                    className={`group rounded-2xl p-3 border transition-all duration-300 cursor-pointer backdrop-blur-xl flex items-center gap-3 ${
-                      isDark
-                        ? 'border-white/10 bg-white/[0.03] hover:border-amber-400/60 hover:bg-white/[0.06]'
-                        : 'border-slate-200 bg-white/80 hover:border-amber-400 shadow-lg'
-                    }`}
-                  >
-                    <div className="w-12 h-12 shrink-0 flex items-center justify-center">
-                      <img
-                        src="/nyuku-cap-stonewash-black.png"
-                        alt="Stonewash Black Cap"
-                        className="w-full h-full object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-300"
-                      />
-                    </div>
-                    <div className="text-left">
-                      <span className="text-[9px] font-mono uppercase text-zinc-400">Headwear</span>
-                      <h4 className="text-xs font-bold text-zinc-900 dark:text-white">5-Panel Camper Cap</h4>
-                      <p className="font-mono font-bold text-amber-500 text-xs mt-0.5">R650</p>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const p = PRODUCTS.find((item) => item.id === 65);
-                          if (p) handleAddToCart(p);
-                        }}
-                        className="mt-1.5 px-2.5 py-0.5 rounded-full bg-amber-400 text-black text-[9px] font-black uppercase tracking-wider"
-                      >
-                        Buy Piece
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 3D Swipable Product Track */}
-                <div className="relative w-full max-w-4xl h-[390px] sm:h-[430px] flex items-center justify-center overflow-visible">
+                <div className="relative w-full max-w-5xl h-[410px] sm:h-[450px] flex items-center justify-center overflow-visible">
                   {CAROUSEL_PIECES.map((piece, index) => {
-                    const offset = index - activeCoverIndex;
-                    const isCenter = offset === 0;
+                    let offset = index - activeCoverIndex;
+                    if (offset > totalPieces / 2) offset -= totalPieces;
+                    if (offset < -totalPieces / 2) offset += totalPieces;
 
-                    // Proportional sizing & balanced lateral distance
-                    const translateX = offset * 250;
-                    const translateZ = isCenter ? 130 : -140 - Math.abs(offset) * 70;
-                    const rotateY = offset * -28;
-                    const scale = isCenter ? 1.12 : Math.max(0.65, 0.76 - (Math.abs(offset) - 1) * 0.1);
-                    const opacity = Math.abs(offset) > 2 ? 0 : isCenter ? 1 : 0.65;
+                    const isCenter = offset === 0;
+                    const translateX = offset * 240;
+                    const translateZ = isCenter ? 130 : -140 - Math.abs(offset) * 65;
+                    const rotateY = offset * -26;
+                    const scale = isCenter ? 1.15 : Math.max(0.65, 0.76 - (Math.abs(offset) - 1) * 0.1);
+                    const opacity = Math.abs(offset) > 3 ? 0 : isCenter ? 1 : 0.65;
                     const zIndex = 30 - Math.abs(offset) * 8;
                     const filter = isCenter ? 'none' : 'blur(1px) brightness(0.85)';
 
@@ -447,37 +350,32 @@ export function App() {
                           isCenter ? 'hover:scale-[1.18]' : 'hover:opacity-90'
                         }`}
                       >
-                        {/* Center Product Ambient Glow */}
                         {isCenter && (
-                          <div className="absolute inset-0 bg-amber-400/15 rounded-full blur-2xl group-hover:bg-amber-400/25 transition-all pointer-events-none" />
+                          <div className="absolute inset-0 bg-amber-400/20 rounded-full blur-2xl group-hover:bg-amber-400/30 transition-all pointer-events-none" />
                         )}
 
-                        {/* Cutout Product Asset */}
-                        <img
-                          src={piece.img}
-                          alt={piece.title}
-                          className="w-full h-full object-contain drop-shadow-[0_20px_28px_rgba(0,0,0,0.7)] group-hover:-translate-y-2 group-hover:drop-shadow-[0_28px_36px_rgba(0,0,0,0.85)] transition-all duration-300"
-                        />
+                        <div className="relative w-full h-full flex items-center justify-center">
+                          <img
+                            src={piece.img}
+                            alt={piece.title}
+                            className="w-full h-full object-contain drop-shadow-[0_20px_28px_rgba(0,0,0,0.7)] group-hover:-translate-y-2 group-hover:drop-shadow-[0_28px_36px_rgba(0,0,0,0.85)] transition-all duration-300"
+                          />
+                        </div>
 
-                        {/* Contact Shadow Ellipse */}
                         <div
                           className={`w-3/4 h-5 bg-black/60 blur-md rounded-full -mt-3 transition-all duration-300 ${
                             isCenter ? 'group-hover:scale-95 group-hover:opacity-85' : 'opacity-40'
                           }`}
                         />
 
-                        {/* Center Product Floating Label Pill */}
                         {isCenter && (
-                          <div className="mt-2 px-4 py-1.5 rounded-full border border-white/10 bg-black/75 backdrop-blur-md text-center shadow-xl transition-all duration-300">
-                            <p className="text-[9px] font-mono uppercase tracking-widest text-amber-400 font-bold">
+                          <div className="mt-2 px-5 py-2 rounded-full border border-slate-200 dark:border-white/10 bg-white/90 dark:bg-black/75 backdrop-blur-md text-center shadow-xl transition-all duration-300">
+                            <p className="text-[9px] font-mono uppercase tracking-widest text-amber-600 dark:text-amber-400 font-bold">
                               {piece.tag}
                             </p>
-                            <h3 className="text-xs sm:text-sm font-bold text-white font-gothic tracking-wide">
+                            <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white font-gothic tracking-wide">
                               {piece.title}
                             </h3>
-                            <p className="text-[11px] font-mono font-black text-amber-400 mt-0.5">
-                              {piece.price}
-                            </p>
                           </div>
                         )}
                       </div>
@@ -485,153 +383,304 @@ export function App() {
                   })}
                 </div>
 
-                {/* Direction Navigation Arrows */}
                 <button
                   type="button"
-                  onClick={() => setActiveCoverIndex((prev) => Math.max(0, prev - 1))}
-                  disabled={activeCoverIndex === 0}
-                  className={`absolute left-2 sm:left-6 z-40 w-9 h-9 rounded-full border flex items-center justify-center transition-all backdrop-blur-md ${
-                    activeCoverIndex === 0
-                      ? 'opacity-30 cursor-not-allowed border-white/5'
-                      : 'border-white/10 bg-white/5 hover:bg-amber-400 hover:text-black hover:border-amber-400 hover:scale-110 active:scale-95'
-                  }`}
+                  onClick={handlePrevCover}
+                  className="absolute left-2 sm:left-6 z-40 w-9 h-9 rounded-full border border-slate-300 dark:border-white/10 bg-white/80 dark:bg-white/5 hover:bg-amber-400 hover:text-black hover:border-amber-400 hover:scale-110 active:scale-95 shadow-sm flex items-center justify-center transition-all backdrop-blur-md"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => setActiveCoverIndex((prev) => Math.min(CAROUSEL_PIECES.length - 1, prev + 1))}
-                  disabled={activeCoverIndex === CAROUSEL_PIECES.length - 1}
-                  className={`absolute right-2 sm:right-6 z-40 w-9 h-9 rounded-full border flex items-center justify-center transition-all backdrop-blur-md ${
-                    activeCoverIndex === CAROUSEL_PIECES.length - 1
-                      ? 'opacity-30 cursor-not-allowed border-white/5'
-                      : 'border-white/10 bg-white/5 hover:bg-amber-400 hover:text-black hover:border-amber-400 hover:scale-110 active:scale-95'
-                  }`}
+                  onClick={handleNextCover}
+                  className="absolute right-2 sm:right-6 z-40 w-9 h-9 rounded-full border border-slate-300 dark:border-white/10 bg-white/80 dark:bg-white/5 hover:bg-amber-400 hover:text-black hover:border-amber-400 hover:scale-110 active:scale-95 shadow-sm flex items-center justify-center transition-all backdrop-blur-md"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* Slider Track Pill Indicators */}
-              <div className="flex items-center justify-center gap-1.5 mt-1">
+              <div className="flex items-center justify-center gap-1.5 mt-2">
                 {CAROUSEL_PIECES.map((_, i) => (
                   <button
                     key={i}
                     onClick={() => setActiveCoverIndex(i)}
                     className={`h-1.5 rounded-full transition-all duration-300 ${
                       activeCoverIndex === i
-                        ? 'w-7 bg-amber-400'
-                        : 'w-2 bg-white/20 hover:bg-white/40'
+                        ? 'w-7 bg-amber-500 dark:bg-amber-400'
+                        : 'w-2 bg-slate-300 dark:bg-white/20 hover:bg-slate-400 dark:hover:bg-white/40'
                     }`}
                   />
                 ))}
               </div>
             </section>
 
-            {/* 2. SECTION: OUR TOP SELLING (6-CARD CUTOUT GLASS GRID) */}
-            <section className="space-y-6">
-              <div className="flex flex-col items-center justify-center text-center space-y-1.5">
-                <div className="px-4 py-1 rounded-full border border-white/10 bg-white/[0.04] backdrop-blur-md">
-                  <span className="text-[11px] font-mono font-bold tracking-widest uppercase text-zinc-300">
-                    Our Top Selling
-                  </span>
-                </div>
-                <p className={`text-xs ${isDark ? 'text-zinc-500' : 'text-slate-500'}`}>
-                  Handcrafted archive pieces available for immediate dispatch.
-                </p>
-              </div>
+            <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              <div
+                className={`relative rounded-3xl p-8 sm:p-14 border transition-all duration-500 overflow-hidden shadow-2xl backdrop-blur-2xl ${
+                  isDark
+                    ? 'bg-zinc-950/80 border-white/10 text-white'
+                    : 'bg-white/95 border-slate-200/80 text-slate-900 shadow-[0_20px_50px_rgba(0,0,0,0.06)]'
+                }`}
+              >
+                <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none bg-[radial-gradient(#000_1px,transparent_1px)] dark:bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:24px_24px]" />
 
-              {/* 6-Card Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
-                {[
-                  { id: 26, title: "Cream Bucket Hat", cat: "Headwear", price: "R320", img: "/nyuku-bucket-cream.png" },
-                  { id: 73, title: "Heritage Tennis Cap", cat: "Headwear", price: "R480", img: "/nyuku-cap-tennis-heritage-charcoal.png" },
-                  { id: 35, title: "Frosted Tumbler", cat: "Drinkware", price: "R120", img: "/nyuku-tumbler-frosted.png" },
-                  { id: 71, title: "Bottlecaps Sage Tee", cat: "T-Shirts", price: "R850", img: "/nyuku-tee-bottlecaps-moss.png" },
-                  { id: 58, title: "Everywhere Varsity", cat: "Outerwear", price: "R3,850", img: "/nyuku-varsity-green-tumbler.png" },
-                  { id: 72, title: "Bubble Sweats", cat: "Bottoms", price: "R1,200", img: "/nyuku-sweatpants-bubble-noir.png" },
-                ].map((item) => (
-                  <div
-                    key={item.id}
-                    onClick={() => {
-                      const p = PRODUCTS.find((prod) => prod.id === item.id) || PRODUCTS[0];
-                      handleOpenProduct(p);
-                    }}
-                    className={`group rounded-2xl p-3 border transition-all duration-300 cursor-pointer flex flex-col justify-between backdrop-blur-xl ${
+                <div className="relative z-10 flex items-start justify-between gap-6 mb-12 sm:mb-16">
+                  <div className="space-y-1">
+                    <h2 className="font-gothic text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.05] uppercase">
+                      Our Best Selling <br />
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-amber-600 dark:from-amber-400 dark:to-yellow-400 font-sans tracking-normal font-normal">
+                        Product Collection
+                      </span>
+                    </h2>
+                  </div>
+
+                  <button
+                    onClick={() => setCurrentPage('shop')}
+                    className={`group shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-full border flex flex-col items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 shadow-sm ${
                       isDark
-                        ? 'border-white/10 bg-white/[0.03] hover:border-amber-400/80 hover:bg-white/[0.06] hover:-translate-y-1'
-                        : 'border-slate-200 bg-white/80 hover:border-amber-400 shadow-sm hover:-translate-y-1'
+                        ? 'border-white/20 bg-white/5 hover:bg-amber-400 hover:text-black hover:border-amber-400'
+                        : 'border-slate-300 bg-white hover:bg-black hover:text-white hover:border-black'
                     }`}
                   >
-                    <div className="relative aspect-square w-full flex items-center justify-center p-1.5 mb-2">
-                      <img
-                        src={item.img}
-                        alt={item.title}
-                        className="w-full h-full object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-300"
-                      />
+                    <span className="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider">
+                      More
+                    </span>
+                    <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform mt-0.5" />
+                  </button>
+                </div>
+
+                <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 items-center">
+                  {[
+                    {
+                      id: 7,
+                      title: 'Awning Stripe Tennis Polo - Camel',
+                      cat: '280GSM PIQUÉ',
+                      price: 'R700',
+                      img: '/nyuku-polo-striped-tan-front-bs.png',
+                      scale: 'scale-105',
+                    },
+                    {
+                      id: 61,
+                      title: 'Mineral Denim 5-Panel Camper',
+                      cat: 'HEADWEAR VAULT',
+                      price: 'R650',
+                      img: '/nyuku-cap-denim-5panel-front-bs.png',
+                      scale: 'scale-90',
+                    },
+                    {
+                      id: 5,
+                      title: 'Vanilla Multi-Bubble Trackpants',
+                      cat: '450GSM FLEECE',
+                      price: 'R650',
+                      img: '/nyuku-trackpants-cream-front-bs.png',
+                      scale: 'scale-105',
+                    },
+                  ].map((item) => (
+                    <div
+                      key={item.id}
+                      onClick={() => {
+                        const p = PRODUCTS.find((prod) => prod.id === item.id) || PRODUCTS[0];
+                        handleOpenProduct(p);
+                      }}
+                      className="group relative flex flex-col items-center justify-center cursor-pointer select-none"
+                    >
+                      <div className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-full flex items-center justify-center transition-transform duration-700 ease-out group-hover:scale-105">
+                        <div
+                          className={`absolute inset-0 rounded-full transition-all duration-500 ${
+                            isDark
+                              ? 'bg-zinc-900/90 border border-white/10 group-hover:border-amber-400/40 group-hover:bg-zinc-900'
+                              : 'bg-slate-100/90 border border-slate-200/80 group-hover:border-amber-400/60 group-hover:bg-slate-50'
+                          }`}
+                        />
+
+                        <div className="absolute inset-4 rounded-full bg-gradient-to-b from-transparent via-white/5 to-amber-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                        <div className="relative z-10 w-4/5 h-4/5 flex items-center justify-center">
+                          <img
+                            src={item.img}
+                            alt={item.title}
+                            className={`w-full h-full object-contain filter drop-shadow-[0_20px_28px_rgba(0,0,0,0.35)] transition-all duration-500 ease-out group-hover:-translate-y-3 group-hover:drop-shadow-[0_28px_36px_rgba(0,0,0,0.5)] ${item.scale}`}
+                          />
+                        </div>
+
+                        <div className="absolute bottom-6 w-36 h-4 bg-black/25 dark:bg-black/50 blur-md rounded-full transition-all duration-500 group-hover:scale-90 group-hover:opacity-60" />
+                      </div>
+
+                      <div className="mt-5 text-center space-y-1">
+                        <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 dark:text-zinc-400 font-bold">
+                          {item.cat}
+                        </span>
+                        <h4 className="font-gothic text-base sm:text-lg font-bold group-hover:text-amber-500 transition-colors">
+                          {item.title}
+                        </h4>
+                        <p className="font-mono text-sm font-black text-amber-600 dark:text-amber-400">
+                          {item.price}
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const p = PRODUCTS.find((prod) => prod.id === item.id) || PRODUCTS[0];
+                          handleAddToCart(p);
+                        }}
+                        className="mt-3 px-4 py-1.5 rounded-full border text-xs font-mono font-bold tracking-wider uppercase transition-all duration-300 opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 shadow-md bg-amber-400 text-black border-amber-300 hover:bg-amber-300"
+                      >
+                        + Add to Bag
+                      </button>
                     </div>
-                    <div className="text-left space-y-0.5">
-                      <span className="text-[9px] font-mono uppercase text-zinc-400">{item.cat}</span>
-                      <h4 className="text-xs font-bold text-zinc-900 dark:text-white line-clamp-1">{item.title}</h4>
-                      <p className="font-mono font-bold text-amber-500 text-xs">{item.price}</p>
-                    </div>
-                    <div className="mt-2 pt-2 border-t border-white/5 flex items-center justify-between">
-                      <span className="text-[10px] text-zinc-400 group-hover:text-amber-400 font-semibold">Inspect</span>
-                      <span className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-xs group-hover:bg-amber-400 group-hover:text-black transition-colors">
-                        +
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+
+                <div className="relative z-20 flex justify-center -mb-4 mt-8 sm:mt-12">
+                  <button
+                    onClick={() => setCurrentPage('shop')}
+                    className={`w-12 h-12 rounded-full border flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 shadow-lg ${
+                      isDark
+                        ? 'bg-zinc-900 border-white/20 text-white hover:bg-amber-400 hover:text-black hover:border-amber-400'
+                        : 'bg-white border-slate-300 text-slate-900 hover:bg-black hover:text-white hover:border-black'
+                    }`}
+                    title="View Full Catalog"
+                  >
+                    <ArrowUpRight className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
             </section>
 
-            {/* 3. SECTION: CUSTOMER REVIEWS (3 MINIMAL GLASS CAPSULES) */}
-            <section className="space-y-6">
+            <section className="relative w-full bg-black text-white overflow-hidden py-20 px-6 sm:px-12 border-t border-white/10">
+              <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-gradient-to-br from-amber-600/20 via-red-600/10 to-transparent rounded-full blur-[140px] pointer-events-none" />
+
+              <div className="max-w-7xl mx-auto space-y-16 relative z-10">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                  <div className="md:col-span-5 space-y-3">
+                    <span className="text-[10px] font-mono tracking-widest uppercase px-3 py-1 rounded-full border border-amber-400/30 bg-amber-400/10 inline-block text-amber-400 font-bold">
+                      ZEBEDIELA, LIMPOPO • 2026
+                    </span>
+                    <p className="text-xs font-mono text-zinc-400 leading-relaxed max-w-sm">
+                      ROOTED IN THE CITRUS VALLEYS OF ZEBEDIELA, LIMPOPO. WE CRAFT HEAVYWEIGHT APPAREL ENGINEERED TO CARRY THE SPIRIT OF HOMELAND HUSTLE.
+                    </p>
+                    <button
+                      onClick={() => setCurrentPage('shop')}
+                      className="group inline-flex items-center gap-1.5 text-xs font-mono tracking-wider uppercase text-amber-400 hover:text-white transition-colors"
+                    >
+                      <span>Explore Drop Vault</span>
+                      <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    </button>
+                  </div>
+
+                  <div className="md:col-span-7 flex md:justify-end">
+                    <h2 className="font-gothic text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-left md:text-right leading-[1.02]">
+                      Advanced Concepts <br />
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-500">
+                        In Streetwear.
+                      </span>
+                    </h2>
+                  </div>
+                </div>
+
+                <div className="relative w-full my-8 flex items-center justify-center">
+                  <div className="w-full text-center overflow-hidden pointer-events-none select-none">
+                    <span className="font-gothic font-black text-[18vw] leading-none tracking-tight text-white/[0.05] uppercase block">
+                      NYÜKU
+                    </span>
+                  </div>
+
+                  <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                    <img
+                      src="/nyuku-varsity-green-tumbler.png"
+                      alt="Everywhere Varsity Cutout"
+                      className="max-h-[360px] sm:max-h-[480px] object-contain drop-shadow-[0_25px_45px_rgba(0,0,0,0.95)]"
+                    />
+                  </div>
+
+                  <div className="absolute -bottom-4 z-20 flex items-center gap-4 px-5 py-2 rounded-full border border-white/10 bg-black/80 backdrop-blur-xl font-mono text-[11px] text-zinc-300 shadow-2xl">
+                    <span className="text-amber-400 font-bold">BATCH 04</span>
+                    <span className="text-zinc-600">•</span>
+                    <span>AUTHENTIC COTTON</span>
+                    <span className="text-zinc-600">•</span>
+                    <span>SEALED RUN</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end pt-8">
+                  <div className="md:col-span-6 space-y-2">
+                    <span className="text-[10px] font-mono tracking-widest uppercase text-amber-500 font-bold block">
+                      ▪ Statement Slogan
+                    </span>
+                    <h3 className="font-gothic text-2xl sm:text-4xl font-extrabold uppercase leading-tight">
+                      It's Creative Energy <br /> You Can Wear.
+                    </h3>
+                  </div>
+                  <div className="md:col-span-6 flex md:justify-end">
+                    <p className="font-mono text-xs text-zinc-400 max-w-sm text-left md:text-right">
+                      Every piece we create reflects the grind behind it. Bespoke cartoon typography engineered for real daily wear.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex flex-col items-center justify-center text-center space-y-1.5">
-                <div className="px-4 py-1 rounded-full border border-white/10 bg-white/[0.04] backdrop-blur-md">
-                  <span className="text-[11px] font-mono font-bold tracking-widest uppercase text-zinc-300">
-                    Customer Review
+                <div className="px-4 py-1.5 rounded-full border border-slate-300 dark:border-white/10 bg-white/80 dark:bg-white/[0.04] backdrop-blur-md">
+                  <span className="text-[11px] font-mono font-bold tracking-widest uppercase text-slate-800 dark:text-zinc-300">
+                    Customer Reviews
                   </span>
                 </div>
+                <p className="text-xs text-slate-600 dark:text-zinc-400">
+                  4.9 / 5.0 Average Rating from Verified Collectors
+                </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 {[
                   {
-                    name: "Kagiso M.",
-                    role: "Cape Town Member",
-                    review: "The 3D embroidery texture on the corduroy bucket hat and varsity jacket feels truly high-end. Pure luxury weight.",
+                    name: 'Kagiso M.',
+                    role: 'Polokwane Member',
+                    piece: 'Everywhere Varsity Jacket',
+                    review:
+                      'The 3D embroidery texture on the corduroy bucket hat and varsity jacket feels truly high-end. Pure luxury weight.',
                   },
                   {
-                    name: "Nandi D.",
-                    role: "Johannesburg Collector",
-                    review: "The frosted tumbler and isometric tee have that vintage tennis syndicate aesthetic down perfectly.",
+                    name: 'Nandi D.',
+                    role: 'Johannesburg Collector',
+                    piece: 'Frosted Tumbler & Cube Tee',
+                    review:
+                      'The frosted tumbler and isometric tee have that vintage tennis syndicate aesthetic down perfectly.',
                   },
                   {
-                    name: "Sipho Z.",
-                    role: "VIP Syndicate Gold",
-                    review: "Quality is unmatched. Heavyweight loopback cotton that holds its structure wash after wash.",
+                    name: 'Sipho Z.',
+                    role: 'VIP Syndicate Gold',
+                    piece: 'Definition Sky Hoodie',
+                    review:
+                      'Quality is unmatched. Heavyweight loopback cotton that holds its structure wash after wash.',
                   },
                 ].map((rev, idx) => (
                   <div
                     key={idx}
-                    className={`rounded-2xl p-5 border backdrop-blur-xl text-left space-y-2.5 ${
-                      isDark ? 'border-white/10 bg-white/[0.03]' : 'border-slate-200 bg-white/80 shadow-sm'
+                    className={`rounded-2xl p-5 border backdrop-blur-xl text-left space-y-3 ${
+                      isDark ? 'border-white/10 bg-white/[0.03]' : 'border-slate-200 bg-white shadow-sm'
                     }`}
                   >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-amber-400 text-black font-bold flex items-center justify-center text-xs">
-                        {rev.name.charAt(0)}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-full bg-amber-400 text-black font-bold flex items-center justify-center text-xs">
+                          {rev.name.charAt(0)}
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-slate-900 dark:text-white">{rev.name}</h4>
+                          <p className="text-[10px] font-mono text-slate-500 dark:text-zinc-400">{rev.role}</p>
+                        </div>
                       </div>
-                      <div>
-                        <h4 className="text-xs font-bold text-zinc-900 dark:text-white">{rev.name}</h4>
-                        <p className="text-[10px] font-mono text-zinc-400">{rev.role}</p>
-                      </div>
+                      <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-amber-400/10 text-amber-600 dark:text-amber-400 border border-amber-400/20">
+                        {rev.piece}
+                      </span>
                     </div>
-                    <div className="flex gap-1 text-amber-400 text-xs">★★★★★</div>
-                    <p className={`text-xs leading-relaxed ${isDark ? 'text-zinc-400' : 'text-slate-600'}`}>
+                    <div className="flex gap-1 text-amber-500 text-xs">★★★★★</div>
+                    <p className="text-xs leading-relaxed text-slate-700 dark:text-zinc-300">
                       "{rev.review}"
                     </p>
                   </div>
@@ -639,104 +688,177 @@ export function App() {
               </div>
             </section>
 
-            {/* 4. SECTION: OUR BEST EQUIPMENT / STATEMENT SHOWCASE */}
-            <section className="space-y-6">
-              <div className="flex flex-col items-center justify-center text-center space-y-1.5">
-                <div className="px-4 py-1 rounded-full border border-white/10 bg-white/[0.04] backdrop-blur-md">
-                  <span className="text-[11px] font-mono font-bold tracking-widest uppercase text-zinc-300">
-                    Our Best Edition
-                  </span>
+            <section className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 border-t border-slate-200 dark:border-white/10">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div className="text-left space-y-2">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-600 dark:text-amber-400 text-[10px] font-mono uppercase tracking-widest">
+                    <Compass className="w-3.5 h-3.5" />
+                    <span>Editorial Lookbook & Storyline</span>
+                  </div>
+                  <h2 className="font-gothic text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white uppercase">
+                    The Syndicate Movement.
+                  </h2>
                 </div>
+                <p className="text-xs max-w-md font-mono text-slate-600 dark:text-zinc-400">
+                  Every drop is a recorded entry in our ongoing narrative. Street-tested silhouettes, high-density cotton, and sealed archives.
+                </p>
               </div>
 
-              <div className={`relative rounded-3xl p-6 sm:p-10 border backdrop-blur-2xl transition-all overflow-hidden ${
-                isDark ? 'border-white/10 bg-white/[0.03]' : 'border-slate-200 bg-white/80 shadow-md'
-              }`}>
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-
-                  {/* Left: Cutout Isometric Cube Tee Display */}
-                  <div className="md:col-span-5 flex justify-center">
-                    <div
-                      onClick={() => {
-                        const p = PRODUCTS.find((prod) => prod.id === 5) || PRODUCTS[0];
-                        handleOpenProduct(p);
-                      }}
-                      className="cursor-pointer group relative flex flex-col items-center"
-                    >
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[
+                  {
+                    id: 'syndicate-roots',
+                    chapter: 'Chapter 01 // Streetwear Genesis',
+                    title: 'Forged in the Culture',
+                    desc: 'From late-night sketches to concrete runways. Built for those who walk with bold intention.',
+                    image: '/nyuku-varsity-green-tumbler.png',
+                    productId: 58,
+                    productName: 'Everywhere Varsity Jacket',
+                    price: 'R3,850',
+                    badge: 'MEMBERS ONLY',
+                  },
+                  {
+                    id: 'summer-escapism',
+                    chapter: 'Chapter 02 // Sun-Drenched Escapism',
+                    title: 'Off-Grid Leisure Club',
+                    desc: 'Neutral knit buckets, wide-wale corduroy textures, and botanical cutouts engineered for summer heat.',
+                    image: '/nyuku-bucket-cream.png',
+                    productId: 26,
+                    productName: 'Cream Corduroy Bucket Hat',
+                    price: 'R320',
+                  },
+                  {
+                    id: 'modern-subversion',
+                    chapter: 'Chapter 03 // Modern Subversion',
+                    title: 'The Safety Pin & The Vault',
+                    desc: 'Heavyweight 300GSM combed cotton drape paired with raw typography and sealed archive numbering.',
+                    image: '/nyuku-tee-bottlecaps-white-front.png',
+                    productId: 62,
+                    productName: 'Soda Bottlecaps Heavy Tee',
+                    price: 'R850',
+                  },
+                ].map((moment) => (
+                  <div
+                    key={moment.id}
+                    className={`group rounded-3xl overflow-hidden border transition-all duration-500 hover:-translate-y-2 flex flex-col justify-between shadow-xl ${
+                      isDark
+                        ? 'border-white/10 bg-zinc-950 hover:border-amber-400/80'
+                        : 'border-slate-200 bg-white hover:border-amber-400'
+                    }`}
+                  >
+                    <div className="relative aspect-[4/5] overflow-hidden bg-slate-900 flex items-center justify-center p-6">
                       <img
-                        src="/nyuku-tee-cube-back.png"
-                        alt="Isometric Cube Tee"
-                        className="w-full max-h-64 object-contain drop-shadow-[0_16px_28px_rgba(0,0,0,0.5)] group-hover:scale-105 transition-transform duration-500"
+                        src={moment.image}
+                        alt={moment.title}
+                        className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 ease-out"
                       />
-                      <div className="w-40 h-5 bg-black/40 blur-md rounded-full -mt-3" />
-                    </div>
-                  </div>
 
-                  {/* Right: Editorial Description */}
-                  <div className="md:col-span-7 space-y-3 text-left">
-                    <span className="text-[11px] font-mono uppercase tracking-widest text-amber-500 font-bold">
-                      Limited High-Summer Release
-                    </span>
-                    <h3 className="font-gothic text-xl sm:text-3xl font-bold text-zinc-900 dark:text-white">
-                      Isometric Rubik's Typographic Cotton Tee
-                    </h3>
-                    <p className={`text-xs leading-relaxed ${isDark ? 'text-zinc-400' : 'text-slate-600'}`}>
-                      Engineered with 280GSM combed compact cotton, dropped shoulders, and thick 1.25-inch ribbed crewneck collar. Screen-printed with an isometric 3D typographic puzzle cube graphic celebrating the Nyüku syndicate character letters.
-                    </p>
-                    <div className="pt-1 flex items-center gap-3">
+                      {moment.badge && (
+                        <div className="absolute bottom-4 left-4 bg-black/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/15 text-[10px] font-mono tracking-widest text-white uppercase flex items-center gap-1.5">
+                          <Flame className="w-3 h-3 text-amber-400" />
+                          <span>{moment.badge}</span>
+                        </div>
+                      )}
+
                       <button
                         onClick={() => {
-                          const p = PRODUCTS.find((prod) => prod.id === 5);
-                          if (p) handleAddToCart(p);
+                          const p = PRODUCTS.find((prod) => prod.id === moment.productId);
+                          if (p) handleOpenProduct(p);
                         }}
-                        className="px-5 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black text-xs font-black uppercase tracking-wider transition-all hover:scale-105 shadow-md"
+                        className="absolute bottom-4 right-4 w-11 h-11 rounded-full bg-white text-black hover:bg-amber-400 flex items-center justify-center shadow-xl transition-transform duration-300 hover:scale-110 active:scale-95"
+                        title="Inspect Piece"
                       >
-                        Claim Yours • R600
-                      </button>
-                      <button
-                        onClick={() => setCurrentPage('shop')}
-                        className="text-xs font-bold text-zinc-400 hover:text-white transition-colors"
-                      >
-                        View Full Drop →
+                        <ShoppingBag className="w-4 h-4 stroke-[2]" />
                       </button>
                     </div>
-                  </div>
 
-                </div>
+                    <div className="p-6 border-t border-slate-100 dark:border-white/5 space-y-2 text-left">
+                      <span className="text-[10px] font-mono tracking-widest text-amber-600 dark:text-amber-400 uppercase font-bold">
+                        {moment.chapter}
+                      </span>
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-amber-500 transition-colors">
+                        {moment.title}
+                      </h3>
+                      <p className="text-xs leading-relaxed text-slate-600 dark:text-zinc-400">
+                        {moment.desc}
+                      </p>
+
+                      <div className="pt-3 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs font-mono">
+                        <span className="text-slate-500 dark:text-zinc-400">{moment.productName}</span>
+                        <span className="text-amber-600 dark:text-amber-400 font-bold">{moment.price}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </section>
 
+            <section className="p-8 sm:p-16 lg:p-20 relative overflow-hidden bg-black text-white border-t border-white/10">
+              <div className="max-w-7xl mx-auto space-y-12">
+                <h2 className="font-gothic text-3xl sm:text-6xl lg:text-7xl font-black uppercase tracking-tight max-w-4xl leading-[1.02]">
+                  Every piece we create reflects the grind behind it.
+                </h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-8 border-t border-white/10 text-xs font-mono text-zinc-400">
+                  <div className="md:col-span-4 space-y-2">
+                    <span className="text-white font-bold uppercase tracking-wider block">Archive Provenance</span>
+                    <p className="leading-relaxed">
+                      Born and established in Zebediela, Limpopo. Crafted from sustainably combed 280GSM–450GSM African cottons and custom cartoon letter typography.
+                    </p>
+                  </div>
+                  <div className="md:col-span-4 space-y-2">
+                    <span className="text-white font-bold uppercase tracking-wider block">The Syndicate Heritage</span>
+                    <p className="leading-relaxed">
+                      Translating regional northern dialect and country club leisure into limited streetwear collector drops.
+                    </p>
+                  </div>
+                  <div className="md:col-span-4 flex md:justify-end items-end">
+                    <span className="text-amber-400 font-bold uppercase tracking-widest text-sm">
+                      [ZEBEDIELA, LIMPOPO, ZA]
+                    </span>
+                  </div>
+                </div>
+
+                <div className="pt-12 text-center select-none pointer-events-none">
+                  <span className="font-gothic font-black text-[18vw] leading-none tracking-tight text-white/[0.05] uppercase block">
+                    NYÜKU SOUTH AFRICA
+                  </span>
+                </div>
+              </div>
+            </section>
           </div>
         )}
 
-        {/* ================= PAGE 2: SHOP ================= */}
         {currentPage === 'shop' && (
           <div className="pt-28 pb-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8">
-            <div className={`border-b pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4 ${
-              isDark ? 'border-zinc-800' : 'border-slate-200'
-            }`}>
+            <div
+              className={`border-b pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4 ${
+                isDark ? 'border-zinc-800' : 'border-slate-200'
+              }`}
+            >
               <div>
-                <h1 className="font-gothic text-4xl sm:text-5xl">
-                  Drop Archive Catalog
-                </h1>
-                <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-zinc-500' : 'text-slate-500'}`}>
+                <h1 className="font-gothic text-4xl sm:text-5xl">Drop Archive Catalog</h1>
+                <p className="text-xs sm:text-sm mt-1 text-slate-600 dark:text-zinc-400">
                   Click on any piece to inspect angles, materials, and available sizes.
                 </p>
               </div>
-              <span className={`text-xs font-mono px-3 py-1.5 rounded-xl border self-start sm:self-auto ${
-                isDark
-                  ? 'bg-zinc-900 border-zinc-800 text-zinc-400'
-                  : 'bg-slate-200 border-slate-300 text-slate-700'
-              }`}>
+              <span
+                className={`text-xs font-mono px-3 py-1.5 rounded-xl border self-start sm:self-auto ${
+                  isDark
+                    ? 'bg-zinc-900 border-zinc-800 text-zinc-400'
+                    : 'bg-slate-200 border-slate-300 text-slate-700'
+                }`}
+              >
                 Showing {filteredProducts.length} of {PRODUCTS.length} Pieces
               </span>
             </div>
 
-            {/* Category Filters */}
-            <div className={`flex items-center gap-2 overflow-x-auto pb-2 border-b ${
-              isDark ? 'border-zinc-800' : 'border-slate-200'
-            }`}>
-              <span className="text-xs font-mono text-zinc-400 uppercase flex items-center gap-1.5 mr-2 shrink-0">
+            <div
+              className={`flex items-center gap-2 overflow-x-auto pb-2 border-b ${
+                isDark ? 'border-zinc-800' : 'border-slate-200'
+              }`}
+            >
+              <span className="text-xs font-mono text-slate-500 dark:text-zinc-400 uppercase flex items-center gap-1.5 mr-2 shrink-0">
                 <SlidersHorizontal className="w-3.5 h-3.5 text-amber-500" /> Filter:
               </span>
 
@@ -766,10 +888,9 @@ export function App() {
               })}
             </div>
 
-            {/* Product Grid */}
             {filteredProducts.length === 0 ? (
               <div className="py-20 text-center space-y-3">
-                <p className="text-zinc-400 text-base font-semibold">No items found in this category.</p>
+                <p className="text-slate-600 dark:text-zinc-400 text-base font-semibold">No items found in this category.</p>
                 <button
                   onClick={() => setSelectedCategory('all')}
                   className="px-4 py-2 rounded-xl bg-amber-400 text-black text-xs font-bold uppercase tracking-wider hover:bg-amber-300 transition-colors"
@@ -789,9 +910,11 @@ export function App() {
                         : 'bg-white border-slate-200 hover:border-amber-400 shadow-sm'
                     }`}
                   >
-                    <div className={`relative aspect-square rounded-xl overflow-hidden mb-3 ${
-                      isDark ? 'bg-zinc-900' : 'bg-slate-100'
-                    }`}>
+                    <div
+                      className={`relative aspect-square rounded-xl overflow-hidden mb-3 ${
+                        isDark ? 'bg-zinc-900' : 'bg-slate-100'
+                      }`}
+                    >
                       <img
                         src={product.images.front}
                         alt={product.title}
@@ -799,11 +922,9 @@ export function App() {
                       />
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase font-mono text-zinc-400">{product.category}</span>
-                      <h3 className="text-xs sm:text-sm font-semibold line-clamp-1 mt-0.5">
-                        {product.title}
-                      </h3>
-                      <p className="font-mono font-bold text-amber-500 mt-1">{product.price}</p>
+                      <span className="text-[10px] uppercase font-mono text-slate-500 dark:text-zinc-400">{product.category}</span>
+                      <h3 className="text-xs sm:text-sm font-semibold line-clamp-1 mt-0.5">{product.title}</h3>
+                      <p className="font-mono font-bold text-amber-600 dark:text-amber-500 mt-1">{product.price}</p>
                     </div>
                     <button
                       onClick={(e) => {
@@ -821,14 +942,15 @@ export function App() {
           </div>
         )}
 
-        {/* ================= PAGE 3: SALE ================= */}
         {currentPage === 'sale' && (
           <div className="pt-28 pb-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8">
-            <div className={`rounded-3xl p-6 sm:p-10 border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
-              isDark
-                ? 'bg-gradient-to-r from-emerald-500/15 via-zinc-900 to-black border-emerald-500/30 text-white'
-                : 'bg-gradient-to-r from-emerald-500/15 via-emerald-50 to-white border-emerald-500/40 text-slate-900'
-            }`}>
+            <div
+              className={`rounded-3xl p-6 sm:p-10 border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
+                isDark
+                  ? 'bg-gradient-to-r from-emerald-500/15 via-zinc-900 to-black border-emerald-500/30 text-white'
+                  : 'bg-gradient-to-r from-emerald-500/15 via-emerald-50 to-white border-emerald-500/40 text-slate-900'
+              }`}
+            >
               <div>
                 <span className="px-3 py-1 rounded-full text-xs font-bold font-mono bg-emerald-500 text-black uppercase">
                   End of Season Vault
@@ -836,13 +958,15 @@ export function App() {
                 <h1 className="font-gothic text-4xl sm:text-5xl mt-3 text-emerald-600 dark:text-emerald-400">
                   Archival Warehouse Clearance
                 </h1>
-                <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-zinc-400' : 'text-slate-600'}`}>
+                <p className="text-xs sm:text-sm mt-1 text-slate-600 dark:text-zinc-400">
                   Limited deadstock and overstock items discounted for Nyüku Club members.
                 </p>
               </div>
               <div className="text-right">
                 <p className="text-3xl font-extrabold font-mono">UP TO 30% OFF</p>
-                <p className={`text-xs ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>Discount calculated in bag.</p>
+                <p className="text-xs text-slate-600 dark:text-zinc-400">
+                  Discount calculated in bag.
+                </p>
               </div>
             </div>
 
@@ -850,9 +974,9 @@ export function App() {
               {PRODUCTS.filter(
                 (p) =>
                   p.title.includes('Cup') ||
-                  p.title.includes('Towel') ||
-                  p.price === 'R430' ||
-                  p.price === 'R350'
+                  p.title.includes('Tumbler') ||
+                  p.price === 'R480' ||
+                  p.price === 'R320'
               ).map((product) => (
                 <div
                   key={product.id}
@@ -863,7 +987,11 @@ export function App() {
                       : 'bg-white border-emerald-500/40 hover:border-emerald-500 shadow-sm'
                   }`}
                 >
-                  <div className={`relative aspect-square rounded-xl overflow-hidden mb-3 ${isDark ? 'bg-zinc-900' : 'bg-slate-100'}`}>
+                  <div
+                    className={`relative aspect-square rounded-xl overflow-hidden mb-3 ${
+                      isDark ? 'bg-zinc-900' : 'bg-slate-100'
+                    }`}
+                  >
                     <img
                       src={product.images.front}
                       alt={product.title}
@@ -874,10 +1002,8 @@ export function App() {
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-xs sm:text-sm font-semibold line-clamp-1">
-                      {product.title}
-                    </h3>
-                    <p className="font-mono font-bold text-emerald-500 mt-1">{product.price}</p>
+                    <h3 className="text-xs sm:text-sm font-semibold line-clamp-1">{product.title}</h3>
+                    <p className="font-mono font-bold text-emerald-600 dark:text-emerald-400 mt-1">{product.price}</p>
                   </div>
                   <button
                     onClick={(e) => {
@@ -894,61 +1020,13 @@ export function App() {
           </div>
         )}
 
-        {/* ================= PAGE 4: ABOUT ================= */}
         {currentPage === 'about' && (
-          <div className="pt-28 pb-16 px-4 sm:px-8 max-w-4xl mx-auto space-y-12">
-            <div className="text-center space-y-4">
-              <span className="text-xs font-mono font-bold uppercase tracking-widest text-amber-500">
-                The Heritage & Vision
-              </span>
-              <h1 className="font-gothic text-5xl sm:text-6xl tracking-wider">
-                ABOUT NYÜKU
-              </h1>
-              <p className={`text-sm sm:text-base max-w-2xl mx-auto leading-relaxed ${
-                isDark ? 'text-zinc-400' : 'text-slate-600'
-              }`}>
-                Born out of Cape Town and inspired by authentic South African street culture, vintage country club heritage, and bespoke cartoon typography.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className={`p-6 rounded-3xl border space-y-3 ${
-                isDark ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-slate-200 shadow-sm'
-              }`}>
-                <h3 className="font-gothic text-2xl text-amber-500">Heavyweight Craft</h3>
-                <p className={`text-xs sm:text-sm leading-relaxed ${isDark ? 'text-zinc-400' : 'text-slate-600'}`}>
-                  Every silhouette is engineered with deliberate structure: 280GSM–320GSM combed cotton tees, 450GSM loopback French Terry hoodies, and weather-resistant tactical ripstop outerwear.
-                </p>
-              </div>
-
-              <div className={`p-6 rounded-3xl border space-y-3 ${
-                isDark ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-slate-200 shadow-sm'
-              }`}>
-                <h3 className="font-gothic text-2xl text-amber-500">The Tennis Syndicate</h3>
-                <p className={`text-xs sm:text-sm leading-relaxed ${isDark ? 'text-zinc-400' : 'text-slate-600'}`}>
-                  Our archival crests blend country club luxury with raw local energy, giving each drop its signature character across Zebediela, Limpopo, and the streets of Cape Town.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-8 rounded-3xl bg-zinc-900 text-white text-center space-y-4 border border-zinc-800 shadow-lg">
-              <h3 className="text-xl font-bold font-gothic text-amber-400">
-                Ready to Join The Archive?
-              </h3>
-              <p className="text-xs text-zinc-400 max-w-md mx-auto">
-                Access private WhatsApp reservations, tier benefits, and priority drops with your personal membership pass.
-              </p>
-              <button
-                onClick={() => setCurrentPage('profile')}
-                className="px-6 py-2.5 rounded-xl bg-amber-400 text-black text-xs font-bold uppercase tracking-wider hover:bg-amber-300 transition-colors"
-              >
-                Open Club Profile
-              </button>
-            </div>
-          </div>
+          <About
+            onNavigateShop={() => setCurrentPage('shop')}
+            isDark={isDark}
+          />
         )}
 
-        {/* ================= PAGE 5: PROFILE ================= */}
         {currentPage === 'profile' && (
           <Profile
             onAddToCart={handleAddToCart}
@@ -959,25 +1037,6 @@ export function App() {
         )}
       </main>
 
-      {/* Floating Theme Switcher Button */}
-      <button
-        type="button"
-        onClick={handleToggleTheme}
-        className={`fixed bottom-6 right-6 z-40 p-3.5 rounded-full shadow-2xl border transition-transform duration-200 hover:scale-110 active:scale-95 ${
-          isDark
-            ? 'bg-zinc-900 border-zinc-700 text-amber-400'
-            : 'bg-white border-slate-300 text-slate-800'
-        }`}
-        title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-      >
-        {isDark ? (
-          <Sun className="w-5 h-5 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
-        ) : (
-          <Moon className="w-5 h-5" />
-        )}
-      </button>
-
-      {/* Interactive Multi-Angle Product Modal */}
       <ProductModal
         product={selectedProduct}
         isOpen={isModalOpen}
@@ -985,7 +1044,13 @@ export function App() {
         onAddToCart={handleAddToCart}
       />
 
-      {/* Cart Drawer */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        initialMode={authMode}
+        isDark={isDark}
+      />
+
       <CartDrawer
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
@@ -995,14 +1060,17 @@ export function App() {
         tier="gold"
       />
 
-      {/* Footer */}
-      <footer className={`border-t py-8 px-4 text-center text-xs transition-colors ${
-        isDark ? 'border-zinc-900 text-zinc-500 bg-black/60' : 'border-slate-200 text-slate-500 bg-white/60'
-      }`}>
-        <p className={`font-gothic text-base ${isDark ? 'text-zinc-400' : 'text-slate-700'}`}>
-          NYÜKU SOUTH AFRICA
+      <footer
+        className={`border-t py-8 px-4 text-center text-xs transition-colors ${
+          isDark ? 'border-zinc-900 text-zinc-500 bg-black/60' : 'border-slate-200 text-slate-500 bg-white/60'
+        }`}
+      >
+        <p className={`font-gothic text-base tracking-widest ${isDark ? 'text-zinc-400' : 'text-slate-700'}`}>
+          NYÜKU • ROOTED IN ZEBEDIELA, LIMPOPO
         </p>
-        <p className="mt-1">© 2026 The Nyüku Club. Cape Town, Western Cape. All Rights Reserved.</p>
+        <p className="mt-1 font-mono text-[11px]">
+          © 2026 The Nyüku Club. Rooted and Established in Limpopo. All Rights Reserved.
+        </p>
       </footer>
     </div>
   );

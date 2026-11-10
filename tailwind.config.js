@@ -8,7 +8,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
         gothic: ['"Cinzel"', 'serif'],
+        mono: ['"Space Grotesk"', 'monospace'],
       },
     },
   },

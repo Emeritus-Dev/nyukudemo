@@ -216,7 +216,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 34,
     title: "NYUKU Vertical Character Tumbler - Matte Black",
-    category: "Accessories",
+    category: "Drinkware",
     gender: "Unisex",
     price: "R120",
     images: {
@@ -369,7 +369,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 20,
     title: "NYUKU Tennis Club Puffer Vest - Safety Orange",
-    category: "Hoodies & Sweats",
+    category: "Outerwear",
     gender: "Unisex",
     price: "R1,050",
     images: {
@@ -390,7 +390,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 26,
     title: "NYUKU Chunky Corduroy Bucket Hat - Royal Purple",
-    category: "Accessories",
+    category: "Headwear",
     gender: "Unisex",
     price: "R320",
     images: {
@@ -410,7 +410,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 25,
     title: "NYUKU Tennis Club Distressed Denim Cap",
-    category: "Accessories",
+    category: "Headwear",
     gender: "Unisex",
     price: "R400",
     images: {
@@ -429,7 +429,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 42,
     title: "NYUKU Heavyweight Fleece Trackpants - Matte Black",
-    category: "Hoodies & Sweats",
+    category: "Bottoms",
     gender: "Unisex",
     price: "R650",
     images: {
@@ -511,7 +511,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 35,
     title: "NYUKU Vertical Character Tumbler - Frosted Glass",
-    category: "Accessories",
+    category: "Drinkware",
     gender: "Unisex",
     price: "R120",
     images: {
@@ -551,7 +551,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 27,
     title: "NYUKU Chunky Corduroy Bucket Hat - Coral",
-    category: "Accessories",
+    category: "Headwear",
     gender: "Unisex",
     price: "R320",
     images: {
@@ -571,7 +571,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 24,
     title: "NYUKU Tennis Club Vintage Washed Cap",
-    category: "Accessories",
+    category: "Headwear",
     gender: "Unisex",
     price: "R300",
     images: {
@@ -631,7 +631,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 36,
     title: "NYUKU Vertical Character Tumbler - Electric Orange",
-    category: "Accessories",
+    category: "Drinkware",
     gender: "Unisex",
     price: "R120",
     images: {
@@ -669,7 +669,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 29,
     title: "NYUKU Chunky Corduroy Bucket Hat - Nude",
-    category: "Accessories",
+    category: "Headwear",
     gender: "Unisex",
     price: "R320",
     images: {
@@ -710,7 +710,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 37,
     title: "NYUKU Vertical Character Tumbler - Blush Pink",
-    category: "Accessories",
+    category: "Drinkware",
     gender: "Unisex",
     price: "R120",
     images: {
@@ -727,7 +727,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 21,
     title: "NYUKU Tennis Club Puffer Vest - Matte Black",
-    category: "Hoodies & Sweats",
+    category: "Outerwear",
     gender: "Unisex",
     price: "R1,050",
     images: {
@@ -748,7 +748,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 22,
     title: "NYUKU EVERYWHERE Frosted Stadium Cup - Frost White",
-    category: "Accessories",
+    category: "Drinkware",
     gender: "Unisex",
     price: "R75",
     images: {
@@ -788,7 +788,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 38,
     title: "NYUKU Vertical Character Tumbler - Crimson Red",
-    category: "Accessories",
+    category: "Drinkware",
     gender: "Unisex",
     price: "R120",
     images: {
@@ -826,7 +826,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 3,
     title: "NYUKU Minimalist Track Jacket",
-    category: "Hoodies & Sweats",
+    category: "Outerwear",
     gender: "Unisex",
     price: "R1,200",
     images: {
@@ -867,7 +867,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 6,
     title: "NYUKU Signature Ribbed Beanie",
-    category: "Accessories",
+    category: "Headwear",
     gender: "Unisex",
     price: "R190",
     images: {
@@ -929,7 +929,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 33,
     title: "NYUKU EVERYWHERE Frosted Stadium Cup - Smoky Black",
-    category: "Accessories",
+    category: "Drinkware",
     gender: "Unisex",
     price: "R75",
     images: {
@@ -965,7 +965,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 7,
     title: "NYUKU Signature 6-Panel Cap",
-    category: "Accessories",
+    category: "Headwear",
     gender: "Unisex",
     price: "R400",
     images: {
@@ -1284,7 +1284,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 70,
     title: "Dictionary Sky Hoodie",
-    category: "Outerwear",
+    category: "Hoodies & Sweats",
     price: "R1,450",
     description: "Heavyweight sky-blue oversized pullover hoodie with dropped shoulders, kangaroo pouch, and an 8-bit typographic dictionary print across the chest.",
     material: "450GSM Loopback French Terry",
@@ -1360,6 +1360,50 @@ export const PRODUCTS: Product[] = [
       back: "/nyuku-cap-tennis-back.png",
       side: "/nyuku-cap-tennis-side.png"
     }
+  },
+  // 67. The Club Quilted Puffer Vest (New Arrival)
+  {
+    id: 74,
+    title: "The Club Quilted Puffer Vest",
+    category: "Outerwear",
+    gender: "Unisex",
+    price: "R2,200",
+    images: {
+      front: "/nyuku-puffer-vest-black-bb.png",
+      back: "/nyuku-puffer-vest-black-bb.png"
+    },
+    colors: ["Jet Black"],
+    description: "Bespoke horizontal-baffled gilet featuring the signature crossed-rackets tennis crest and cursive 'Club' embroidery. Fitted with high-shine metallic hardware and dual hem toggle cinches.",
+    material: "Matte Technical Ripstop Nylon with Down Insulation",
+    sizes: [
+      { size: "S", stock: 6 },
+      { size: "M", stock: 12 },
+      { size: "L", stock: 10 },
+      { size: "XL", stock: 5 }
+    ]
+  },
+  // 68. Citrus Athletic Rugby Polo (New Arrival)
+  {
+    id: 75,
+    title: "Citrus Athletic Rugby Polo",
+    category: "T-Shirts",
+    gender: "Unisex",
+    price: "R1,150",
+    images: {
+      front: "/nyuku-rugby-polo-orange-bb.png",
+      back: "/nyuku-rugby-polo-orange-bb.png"
+    },
+    colors: ["Citrus Orange / Chalk White"],
+    description: "Engineered wide horizontal stripes in vibrant citrus orange and chalk white. Features a crisp fold-down polo collar, 3-button placket, and high-density heraldic crest embroidery on the chest.",
+    material: "320GSM Heavyweight Combed Cotton Jersey",
+    sizes: [
+      { size: "XS", stock: 4 },
+      { size: "S", stock: 10 },
+      { size: "M", stock: 16 },
+      { size: "L", stock: 14 },
+      { size: "XL", stock: 8 },
+      { size: "XXL", stock: 4 }
+    ]
   }
 ];
 
