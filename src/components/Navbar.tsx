@@ -10,7 +10,7 @@ export interface NavbarProps {
   onOpenCart?: () => void;
   isDark: boolean;
   onToggleTheme: () => void;
-  onOpenAuth?: (mode: 'login' | 'signup') => void;
+  onOpenAuth?: (mode: 'login' | 'register') => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -38,7 +38,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             : 'bg-white/85 border-slate-200/80 text-slate-900'
         }`}
       >
-        {/* Left: Brand Logo */}
         <div
           onClick={() => handleNavClick('home')}
           className="cursor-pointer select-none transition-transform duration-200 hover:scale-105 active:scale-95 shrink-0 flex items-center h-9 sm:h-10 max-w-[120px] sm:max-w-[140px] overflow-hidden"
@@ -61,7 +60,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           </span>
         </div>
 
-        {/* Center: Desktop Nav Pills */}
         <div
           className={`hidden md:flex items-center gap-1 sm:gap-2 px-3 py-1.5 rounded-full border backdrop-blur-md transition-colors ${
             isDark ? 'bg-zinc-900/60 border-zinc-800' : 'bg-slate-100/80 border-slate-200'
@@ -112,9 +110,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
         </div>
 
-        {/* Right: Actions Cluster */}
         <div className="flex items-center gap-1.5 sm:gap-3">
-          {/* Theme Toggle Button */}
           <button
             type="button"
             onClick={onToggleTheme}
@@ -133,7 +129,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </button>
 
-          {/* Profile Button */}
           <button
             onClick={() => handleNavClick('profile')}
             className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full border transition-all duration-200 flex items-center justify-center hover:scale-105 active:scale-95 ${
@@ -149,7 +144,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             <User className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
 
-          {/* Bag Button with Count */}
           <button
             onClick={onOpenCart}
             className={`relative w-9 h-9 sm:w-10 sm:h-10 rounded-full border transition-all duration-200 flex items-center justify-center hover:scale-105 active:scale-95 ${
@@ -166,7 +160,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </button>
 
-          {/* Auth Button */}
           <button
             onClick={() => onOpenAuth?.('login')}
             className="hidden sm:inline-flex px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-amber-400 hover:bg-amber-300 text-black shadow-md hover:scale-105 active:scale-95 transition-all"
@@ -174,7 +167,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             Club Login
           </button>
 
-          {/* Mobile Hamburger Toggle Button */}
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -190,7 +182,6 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </nav>
 
-      {/* Mobile Drawer Accordion */}
       {mobileMenuOpen && (
         <div
           className={`md:hidden border-b px-5 py-4 space-y-2 backdrop-blur-2xl animate-fadeIn shadow-2xl transition-colors ${

@@ -23,10 +23,11 @@ export interface Product {
   material: string;
   sizes: ProductSize[];
   colors?: string[];
+  details?: string[];
+  availableSizes?: string[];
 }
 
 export const PRODUCTS: Product[] = [
-  // 1. Signature Oversized Tee
   {
     id: 1,
     title: "Signature Cartoon Character Oversized Tee",
@@ -46,7 +47,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 6 }
     ]
   },
-  // 2. Tennis Club Shorts - Red
   {
     id: 9,
     title: "NYUKU Tennis Club Shorts - Crimson Red",
@@ -67,7 +67,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 3 }
     ]
   },
-  // 3. Botanical Technical Track Jacket - Olive
   {
     id: 48,
     title: "NYUKU Botanical Technical Track Jacket - Olive",
@@ -89,7 +88,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 4 }
     ]
   },
-  // 4. Character Plush Cotton Towel - Blush Pink
   {
     id: 49,
     title: "NYUKU Character Plush Cotton Towel - Blush Pink",
@@ -108,7 +106,6 @@ export const PRODUCTS: Product[] = [
       { size: "Bath Sheet (70x140cm)", stock: 35 }
     ]
   },
-  // 5. Heavyweight Fleece Trackpants - Vanilla Cream
   {
     id: 41,
     title: "NYUKU Heavyweight Fleece Trackpants - Vanilla Cream",
@@ -130,7 +127,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 5 }
     ]
   },
-  // 6. Vintage Canvas Tote - Chalk White
   {
     id: 39,
     title: "NYUKU-DAY Vintage Canvas Tote - Chalk White",
@@ -149,7 +145,6 @@ export const PRODUCTS: Product[] = [
       { size: "One Size", stock: 80 }
     ]
   },
-  // 7. Club Vertical Stripe Golf Polo - Camel Tan
   {
     id: 46,
     title: "NYUKU Club Vertical Stripe Golf Polo - Camel Tan",
@@ -171,7 +166,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 6 }
     ]
   },
-  // 8. Definition Heavyweight Hoodie - Espresso Brown
   {
     id: 43,
     title: "NYUKU Definition Heavyweight Hoodie - Espresso Brown",
@@ -193,7 +187,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 4 }
     ]
   },
-  // 9. Character Plush Cotton Towel - Sage Green
   {
     id: 50,
     title: "NYUKU Character Plush Cotton Towel - Sage Green",
@@ -212,7 +205,6 @@ export const PRODUCTS: Product[] = [
       { size: "Bath Sheet (70x140cm)", stock: 30 }
     ]
   },
-  // 10. Vertical Character Tumbler - Matte Black
   {
     id: 34,
     title: "NYUKU Vertical Character Tumbler - Matte Black",
@@ -229,7 +221,6 @@ export const PRODUCTS: Product[] = [
       { size: "450ml (Standard)", stock: 60 }
     ]
   },
-  // 11. Club Vertical Stripe Golf Polo - Forest Green
   {
     id: 47,
     title: "NYUKU Club Vertical Stripe Golf Polo - Forest Green",
@@ -252,7 +243,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 5 }
     ]
   },
-  // 12. Core Character Oversized Tee - Blush Pink
   {
     id: 52,
     title: "NYUKU Core Character Oversized Tee - Blush Pink",
@@ -274,7 +264,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 6 }
     ]
   },
-  // 13. Heritage Soccer Kit - Sethosa #23 (Orange Edition)
   {
     id: 54,
     title: "NYUKU Heritage Soccer Kit - Sethosa #23 (Orange Edition)",
@@ -297,7 +286,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 6 }
     ]
   },
-  // 14. Core Character Oversized Tee - Mint Green
   {
     id: 56,
     title: "NYUKU Core Character Oversized Tee - Mint Green",
@@ -319,7 +307,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 5 }
     ]
   },
-  // 15. Heritage Soccer Crop Top - Pink Edition
   {
     id: 55,
     title: "NYUKU Heritage Soccer Crop Top - Pink Edition",
@@ -342,7 +329,6 @@ export const PRODUCTS: Product[] = [
       { size: "L", stock: 4 }
     ]
   },
-  // 16. Collage Block Tee - Chalk White
   {
     id: 23,
     title: "NYUKU EVERYWHERE Collage Block Tee - Chalk White",
@@ -365,7 +351,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 6 }
     ]
   },
-  // 17. Tennis Club Puffer Vest - Safety Orange
   {
     id: 20,
     title: "NYUKU Tennis Club Puffer Vest - Safety Orange",
@@ -386,7 +371,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 4 }
     ]
   },
-  // 18. Bucket Hat - Royal Purple
   {
     id: 26,
     title: "NYUKU Chunky Corduroy Bucket Hat - Royal Purple",
@@ -406,7 +390,6 @@ export const PRODUCTS: Product[] = [
       { size: "L/XL", stock: 30 }
     ]
   },
-  // 19. Distressed Denim Tennis Cap
   {
     id: 25,
     title: "NYUKU Tennis Club Distressed Denim Cap",
@@ -425,7 +408,6 @@ export const PRODUCTS: Product[] = [
       { size: "One Size (Adjustable Strap)", stock: 25 }
     ]
   },
-  // 20. Heavyweight Fleece Trackpants - Matte Black
   {
     id: 42,
     title: "NYUKU Heavyweight Fleece Trackpants - Matte Black",
@@ -445,7 +427,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 6 }
     ]
   },
-  // 21. Tennis Club Shorts - Matte Black
   {
     id: 8,
     title: "NYUKU Tennis Club Shorts - Matte Black",
@@ -466,7 +447,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 5 }
     ]
   },
-  // 22. Vintage Canvas Tote - Espresso Brown
   {
     id: 40,
     title: "NYUKU-DAY Vintage Canvas Tote - Espresso Brown",
@@ -485,29 +465,6 @@ export const PRODUCTS: Product[] = [
       { size: "One Size", stock: 80 }
     ]
   },
-  // 23. Definition Heavyweight Hoodie - Nude
-  {
-    id: 44,
-    title: "NYUKU Definition Heavyweight Hoodie - Nude",
-    category: "Hoodies & Sweats",
-    gender: "Unisex",
-    price: "R600",
-    images: {
-      front: "/nyuku-hoodie-definition-nude-front.png",
-      folded: "/nyuku-hoodie-definition-nude-folded.png",
-      side: "/nyuku-hoodie-definition-nude-side.png"
-    },
-    colors: ["Nude"],
-    description: "Understated neutral sand nude pullover hoodie featuring high-density 8-bit arcade typography and dictionary noun definition graphics. Tailored with dropped shoulders and plush heavyweight fleece.",
-    material: "100% French Terry Cotton Fleece (450GSM)",
-    sizes: [
-      { size: "S", stock: 5 },
-      { size: "M", stock: 10 },
-      { size: "L", stock: 8 },
-      { size: "XL", stock: 3 }
-    ]
-  },
-  // 24. Vertical Character Tumbler - Frosted Glass
   {
     id: 35,
     title: "NYUKU Vertical Character Tumbler - Frosted Glass",
@@ -524,7 +481,6 @@ export const PRODUCTS: Product[] = [
       { size: "450ml (Standard)", stock: 50 }
     ]
   },
-  // 25. Collage Block Tee - Cyan
   {
     id: 28,
     title: "NYUKU EVERYWHERE Collage Block Tee - Electric Cyan",
@@ -547,7 +503,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 4 }
     ]
   },
-  // 26. Bucket Hat - Coral
   {
     id: 27,
     title: "NYUKU Chunky Corduroy Bucket Hat - Coral",
@@ -567,7 +522,6 @@ export const PRODUCTS: Product[] = [
       { size: "L/XL", stock: 25 }
     ]
   },
-  // 27. Vintage Washed Tennis Cap - Charcoal Brown
   {
     id: 24,
     title: "NYUKU Tennis Club Vintage Washed Cap",
@@ -586,7 +540,6 @@ export const PRODUCTS: Product[] = [
       { size: "One Size (Adjustable Brass Buckle)", stock: 35 }
     ]
   },
-  // 28. Rugby Polo - Baby Pink
   {
     id: 12,
     title: "NYUKU Heritage Striped Rugby Polo - Baby Pink",
@@ -605,7 +558,6 @@ export const PRODUCTS: Product[] = [
       { size: "L", stock: 4 }
     ]
   },
-  // 29. Definition Heavyweight Hoodie - Sky Blue
   {
     id: 45,
     title: "NYUKU Definition Heavyweight Hoodie - Sky Blue",
@@ -627,7 +579,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 5 }
     ]
   },
-  // 30. Vertical Character Tumbler - Electric Orange
   {
     id: 36,
     title: "NYUKU Vertical Character Tumbler - Electric Orange",
@@ -644,7 +595,6 @@ export const PRODUCTS: Product[] = [
       { size: "450ml (Standard)", stock: 45 }
     ]
   },
-  // 31. Tennis Club Shorts - French Navy
   {
     id: 10,
     title: "NYUKU Tennis Club Shorts - French Navy",
@@ -665,7 +615,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 4 }
     ]
   },
-  // 32. Bucket Hat - Nude
   {
     id: 29,
     title: "NYUKU Chunky Corduroy Bucket Hat - Nude",
@@ -685,7 +634,6 @@ export const PRODUCTS: Product[] = [
       { size: "L/XL", stock: 28 }
     ]
   },
-  // 33. Acid-Wash Neon Scribble Tee
   {
     id: 4,
     title: "Vintage Acid-Wash NYUKU Neon Scribble Tee",
@@ -706,7 +654,6 @@ export const PRODUCTS: Product[] = [
       { size: "XXL", stock: 2 }
     ]
   },
-  // 34. Vertical Character Tumbler - Blush Pink
   {
     id: 37,
     title: "NYUKU Vertical Character Tumbler - Blush Pink",
@@ -723,28 +670,6 @@ export const PRODUCTS: Product[] = [
       { size: "450ml (Standard)", stock: 55 }
     ]
   },
-  // 35. Tennis Club Puffer Vest - Matte Black
-  {
-    id: 21,
-    title: "NYUKU Tennis Club Puffer Vest - Matte Black",
-    category: "Outerwear",
-    gender: "Unisex",
-    price: "R1,050",
-    images: {
-      front: "/nyuku-vest-black-front.png",
-      folded: "/nyuku-vest-black-folded.png",
-      side: "/nyuku-vest-black-close.png"
-    },
-    description: "Monochrome matte black insulated puffer vest with high stand collar, full-length front zip, and contrasting white and gold 'The Nyüku Club' tennis embroidery.",
-    material: "100% Matte Technical Nylon with Thermal Down Fill",
-    sizes: [
-      { size: "S", stock: 7 },
-      { size: "M", stock: 12 },
-      { size: "L", stock: 10 },
-      { size: "XL", stock: 6 }
-    ]
-  },
-  // 36. Reusable Stadium Cup - Frost White
   {
     id: 22,
     title: "NYUKU EVERYWHERE Frosted Stadium Cup - Frost White",
@@ -761,7 +686,6 @@ export const PRODUCTS: Product[] = [
       { size: "500ml (Standard)", stock: 150 }
     ]
   },
-  // 37. Collage Block Tee - Lavender
   {
     id: 32,
     title: "NYUKU EVERYWHERE Collage Block Tee - Pastel Lavender",
@@ -784,7 +708,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 5 }
     ]
   },
-  // 38. Vertical Character Tumbler - Crimson Red
   {
     id: 38,
     title: "NYUKU Vertical Character Tumbler - Crimson Red",
@@ -801,7 +724,6 @@ export const PRODUCTS: Product[] = [
       { size: "450ml (Standard)", stock: 50 }
     ]
   },
-  // 39. Tennis Club Shorts - Espresso Brown
   {
     id: 11,
     title: "NYUKU Tennis Club Shorts - Espresso Brown",
@@ -822,26 +744,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 3 }
     ]
   },
-  // 40. Minimalist Track Jacket
-  {
-    id: 3,
-    title: "NYUKU Minimalist Track Jacket",
-    category: "Outerwear",
-    gender: "Unisex",
-    price: "R1,200",
-    images: {
-      front: "/nyuku-vest-black-front.png"
-    },
-    description: "Structured outerwear piece with custom matte black metal hardware and tonal embroidery accents across the spine.",
-    material: "Durable Nylon Shell with Cotton Lining",
-    sizes: [
-      { size: "S", stock: 2 },
-      { size: "M", stock: 6 },
-      { size: "L", stock: 5 },
-      { size: "XL", stock: 2 }
-    ]
-  },
-  // 41. Isometric Cube Tee
   {
     id: 5,
     title: "NYUKU Isometric Cube Tee",
@@ -863,7 +765,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 5 }
     ]
   },
-  // 42. Signature Ribbed Beanie
   {
     id: 6,
     title: "NYUKU Signature Ribbed Beanie",
@@ -883,7 +784,6 @@ export const PRODUCTS: Product[] = [
       { size: "One Size", stock: 35 }
     ]
   },
-  // 43. Heavyweight Hoodie (Core)
   {
     id: 2,
     title: "NYUKU Heritage Heavyweight Hoodie",
@@ -906,7 +806,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 4 }
     ]
   },
-  // 44. Rugby Polo - Royal Blue
   {
     id: 16,
     title: "NYUKU Heritage Striped Rugby Polo - Royal Blue",
@@ -925,7 +824,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 7 }
     ]
   },
-  // 45. Reusable Stadium Cup - Smoky Black
   {
     id: 33,
     title: "NYUKU EVERYWHERE Frosted Stadium Cup - Smoky Black",
@@ -942,7 +840,6 @@ export const PRODUCTS: Product[] = [
       { size: "500ml (Standard)", stock: 130 }
     ]
   },
-  // 46. Rugby Polo - Matte Black
   {
     id: 13,
     title: "NYUKU Heritage Striped Rugby Polo - Matte Black",
@@ -961,7 +858,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 5 }
     ]
   },
-  // 47. Signature 6-Panel Cap
   {
     id: 7,
     title: "NYUKU Signature 6-Panel Cap",
@@ -981,7 +877,6 @@ export const PRODUCTS: Product[] = [
       { size: "One Size (Adjustable)", stock: 40 }
     ]
   },
-  // 48. Rugby Polo - Canary Yellow
   {
     id: 14,
     title: "NYUKU Heritage Striped Rugby Polo - Canary Yellow",
@@ -1000,7 +895,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 3 }
     ]
   },
-  // 49. Rugby Polo - Royal Purple
   {
     id: 15,
     title: "NYUKU Heritage Striped Rugby Polo - Royal Purple",
@@ -1019,7 +913,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 2 }
     ]
   },
-  // 50. Rugby Polo - Crimson Red
   {
     id: 17,
     title: "NYUKU Heritage Striped Rugby Polo - Crimson Red",
@@ -1038,7 +931,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 4 }
     ]
   },
-  // 51. Rugby Polo - Heather Grey
   {
     id: 18,
     title: "NYUKU Heritage Striped Rugby Polo - Heather Grey",
@@ -1057,7 +949,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 3 }
     ]
   },
-  // 52. Rugby Polo - Electric Orange
   {
     id: 19,
     title: "NYUKU Heritage Striped Rugby Polo - Electric Orange",
@@ -1076,7 +967,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 5 }
     ]
   },
-  // 53. Slender Fieldbar Cooler Box
   {
     id: 57,
     title: "NYUKU Club 5L Slim Fieldbar Cooler - Forest Green",
@@ -1095,7 +985,6 @@ export const PRODUCTS: Product[] = [
       { size: "5L Slim", stock: 12 }
     ]
   },
-  // 54. Everywhere Leather Varsity Jacket - Green
   {
     id: 58,
     title: "NYUKU Everywhere Leather Varsity Jacket - Forest Green",
@@ -1117,7 +1006,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 5 }
     ]
   },
-  // 55. Everywhere Leather Varsity Jacket - Orange
   {
     id: 59,
     title: "NYUKU Everywhere Leather Varsity Jacket - Safety Orange",
@@ -1138,7 +1026,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 4 }
     ]
   },
-  // 56. Soda Bottlecaps Heavyweight Tee - Ice Blue
   {
     id: 60,
     title: "NYUKU Soda Bottlecaps Heavyweight Tee - Ice Blue",
@@ -1160,7 +1047,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 12 }
     ]
   },
-  // 57. Soda Bottlecaps Heavyweight Tee - Sage Green
   {
     id: 61,
     title: "NYUKU Soda Bottlecaps Heavyweight Tee - Sage",
@@ -1182,7 +1068,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 8 }
     ]
   },
-  // 58. Soda Bottlecaps Heavyweight Tee - Chalk White
   {
     id: 62,
     title: "NYUKU Soda Bottlecaps Heavyweight Tee - Chalk White",
@@ -1204,7 +1089,6 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 15 }
     ]
   },
-  // 59. 5-Panel Camper Cap - Cyan Acid Denim
   {
     id: 63,
     title: "NYUKU 5-Panel Camper Cap - Cyan Acid Denim",
@@ -1223,7 +1107,6 @@ export const PRODUCTS: Product[] = [
       { size: "One Size (Adjustable Strap)", stock: 45 }
     ]
   },
-  // 60. 5-Panel Camper Cap - Crimson Red
   {
     id: 64,
     title: "NYUKU 5-Panel Camper Cap - Crimson Red",
@@ -1242,7 +1125,6 @@ export const PRODUCTS: Product[] = [
       { size: "One Size (Adjustable Strap)", stock: 40 }
     ]
   },
-  // 61. 5-Panel Camper Cap - Washed Black Denim
   {
     id: 65,
     title: "NYUKU 5-Panel Camper Cap - Washed Black Denim",
@@ -1261,7 +1143,6 @@ export const PRODUCTS: Product[] = [
       { size: "One Size (Adjustable Strap)", stock: 50 }
     ]
   },
-  // 62. Ballistic Canvas Camping Chair
   {
     id: 66,
     title: "NYUKU EVERYWHERE Ballistic Canvas Camping Chair",
@@ -1280,7 +1161,6 @@ export const PRODUCTS: Product[] = [
       { size: "One Size (Foldable Portable)", stock: 25 }
     ]
   },
-  // 63. Dictionary Sky Hoodie (Slideshow Drop)
   {
     id: 70,
     title: "Dictionary Sky Hoodie",
@@ -1301,7 +1181,6 @@ export const PRODUCTS: Product[] = [
       folded: "/nyuku-hoodie-definition-blue-folded.png"
     }
   },
-  // 64. Bottlecaps Sage Tee (Slideshow Drop)
   {
     id: 71,
     title: "Bottlecaps Sage Tee",
@@ -1322,7 +1201,6 @@ export const PRODUCTS: Product[] = [
       side: "/nyuku-tee-bottlecaps-sage-angle.png"
     }
   },
-  // 65. Bubble Mascot Sweats (Slideshow Drop)
   {
     id: 72,
     title: "Bubble Mascot Sweats",
@@ -1343,7 +1221,6 @@ export const PRODUCTS: Product[] = [
       angle: "/nyuku-sweatpants-baggy-black-angle.png"
     }
   },
-  // 66. Heritage Tennis Cap (Slideshow Drop)
   {
     id: 73,
     title: "Heritage Tennis Cap",
@@ -1361,7 +1238,6 @@ export const PRODUCTS: Product[] = [
       side: "/nyuku-cap-tennis-side.png"
     }
   },
-  // 67. The Club Quilted Puffer Vest (New Arrival)
   {
     id: 74,
     title: "The Club Quilted Puffer Vest",
@@ -1382,53 +1258,66 @@ export const PRODUCTS: Product[] = [
       { size: "XL", stock: 5 }
     ]
   },
-{
-  id: 81,
-  title: 'NYÜKU 3.0 Reflected Block Tee - Noir',
-  category: 'Heavyweight Graphic Tee',
-  price: 'R850',
-  gender: 'Unisex',
-  description: 'Heavyweight 280GSM combed African cotton featuring the iconic rectangular 3.0 mirrored block typography screen print. Relaxed boxy streetwear fit with structured drop shoulders.',
-  details: [
-    '280GSM 100% Combed African Cotton',
-    'High-density matte screen print graphic',
-    'Thick 1-inch ribbed crewneck collar',
-    'Reinforced double-needle hem & cuffs',
-    'Rooted and authenticated in Zebediela, Limpopo'
-  ],
-  images: {
-    front: '/nyuku-tee-reflected-black-front.png',
-    folded: '/nyuku-tee-reflected-black-folded.png',
-    close: '/nyuku-tee-reflected-black-close.png',
-    back: '/nyuku-tee-reflected-black-back.png',
+  {
+    id: 81,
+    title: "NYÜKU 3.0 Reflected Block Tee - Noir",
+    category: "T-Shirts",
+    price: "R850",
+    gender: "Unisex",
+    description: "Heavyweight 280GSM combed African cotton featuring the iconic rectangular 3.0 mirrored block typography screen print. Relaxed boxy streetwear fit with structured drop shoulders.",
+    details: [
+      "280GSM 100% Combed African Cotton",
+      "High-density matte screen print graphic",
+      "Thick 1-inch ribbed crewneck collar",
+      "Reinforced double-needle hem & cuffs",
+      "Rooted and authenticated in Zebediela, Limpopo"
+    ],
+    material: "100% Combed African Cotton (280GSM)",
+    sizes: [
+      { size: "S", stock: 12 },
+      { size: "M", stock: 20 },
+      { size: "L", stock: 18 },
+      { size: "XL", stock: 10 },
+      { size: "2XL", stock: 5 }
+    ],
+    images: {
+      front: "/nyuku-tee-reflected-black-front.png",
+      folded: "/nyuku-tee-reflected-black-folded.png",
+      close: "/nyuku-tee-reflected-black-close.png",
+      back: "/nyuku-tee-reflected-black-back.png"
+    },
+    availableSizes: ["S", "M", "L", "XL", "2XL"]
   },
-  availableSizes: ['S', 'M', 'L', 'XL', '2XL'],
-},
-{
-  id: 82,
-  title: 'NYÜKU 3.0 Reflected Block Tee - Bubble Pink',
-  category: 'Heavyweight Graphic Tee',
-  price: 'R850',
-  gender: 'Unisex',
-  description: 'Heavyweight 280GSM combed cotton jersey in a vibrant bubble pink colorway, featuring the contrast mirrored 3.0 logo print across the chest.',
-  details: [
-    '280GSM 100% Combed African Cotton',
-    'High-density screen print graphic',
-    'Thick 1-inch ribbed crewneck collar',
-    'Relaxed boxy silhouette',
-    'Rooted and authenticated in Zebediela, Limpopo'
-  ],
-  images: {
-    front: '/nyuku-tee-reflected-pink-front.png',
-    folded: '/nyuku-tee-reflected-pink-folded.png',
-    close: '/nyuku-tee-reflected-pink-close.png',
-    back: '/nyuku-tee-reflected-pink-back.png',
+  {
+    id: 82,
+    title: "NYÜKU 3.0 Reflected Block Tee - Bubble Pink",
+    category: "T-Shirts",
+    price: "R850",
+    gender: "Unisex",
+    description: "Heavyweight 280GSM combed cotton jersey in a vibrant bubble pink colorway, featuring the contrast mirrored 3.0 logo print across the chest.",
+    details: [
+      "280GSM 100% Combed African Cotton",
+      "High-density screen print graphic",
+      "Thick 1-inch ribbed crewneck collar",
+      "Relaxed boxy silhouette",
+      "Rooted and authenticated in Zebediela, Limpopo"
+    ],
+    material: "100% Combed African Cotton (280GSM)",
+    sizes: [
+      { size: "S", stock: 10 },
+      { size: "M", stock: 16 },
+      { size: "L", stock: 14 },
+      { size: "XL", stock: 8 },
+      { size: "2XL", stock: 4 }
+    ],
+    images: {
+      front: "/nyuku-tee-reflected-pink-front.png",
+      folded: "/nyuku-tee-reflected-pink-folded.png",
+      close: "/nyuku-tee-reflected-pink-close.png",
+      back: "/nyuku-tee-reflected-pink-back.png"
+    },
+    availableSizes: ["S", "M", "L", "XL", "2XL"]
   },
-  availableSizes: ['S', 'M', 'L', 'XL', '2XL'],
-},
-
-
-  // 68. Citrus Athletic Rugby Polo (New Arrival)
   {
     id: 75,
     title: "Citrus Athletic Rugby Polo",

@@ -75,10 +75,10 @@ export function App() {
 
   const handleAddToCart = (product: Product, size = 'M') => {
     setCart((prev) => {
-      const existing = prev.find((item) => item.product.id === product.id && item.size === size);
+      const existing = prev.find((item) => String(item.product.id) === String(product.id) && item.size === size);
       if (existing) {
         return prev.map((item) =>
-          item.product.id === product.id && item.size === size
+          String(item.product.id) === String(product.id) && item.size === size
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
@@ -88,11 +88,11 @@ export function App() {
     setIsCartOpen(true);
   };
 
-  const handleUpdateQuantity = (productId: number, size: string, delta: number) => {
+  const handleUpdateQuantity = (productId: string | number, size: string, delta: number) => {
     setCart((prev) =>
       prev
         .map((item) => {
-          if (item.product.id === productId && item.size === size) {
+          if (String(item.product.id) === String(productId) && item.size === size) {
             const nextQty = item.quantity + delta;
             return nextQty > 0 ? { ...item, quantity: nextQty } : null;
           }
@@ -102,9 +102,9 @@ export function App() {
     );
   };
 
-  const handleRemoveFromCart = (productId: number, size: string) => {
+  const handleRemoveFromCart = (productId: string | number, size: string) => {
     setCart((prev) =>
-      prev.filter((item) => !(item.product.id === productId && item.size === size))
+      prev.filter((item) => !(String(item.product.id) === String(productId) && item.size === size))
     );
   };
 
@@ -113,56 +113,56 @@ export function App() {
   const CAROUSEL_PIECES = useMemo(
     () => [
       {
-        id: 71,
+        id: '71',
         title: 'Bottlecaps Sage Tee',
         tag: 'Heavy Cotton',
         material: '280GSM Combed Cotton',
         img: '/nyuku-tee-bottlecaps-moss.png',
       },
       {
-        id: 74,
+        id: '74',
         title: 'Club Quilted Puffer Vest',
         tag: 'Down Outerwear',
         material: 'Technical Matte Ripstop',
         img: '/nyuku-puffer-vest-black-bb.png',
       },
       {
-        id: 70,
+        id: '70',
         title: 'Dictionary Sky Hoodie',
         tag: 'Fleece Outerwear',
         material: '450GSM French Terry',
         img: '/nyuku-hoodie-dictionary-sky.png',
       },
       {
-        id: 81,
+        id: '81',
         title: 'NYÜKU 3.0 Block Tee - Noir',
         tag: 'Heavy Graphic Tee',
         material: '280GSM Combed African Cotton',
         img: '/nyuku-tee-reflected-black-front-bs.png',
       },
       {
-        id: 72,
+        id: '72',
         title: 'Bubble Mascot Sweats',
         tag: 'Baggy Fleece',
         material: '450GSM Loopback Cotton',
         img: '/nyuku-sweatpants-bubble-noir.png',
       },
       {
-        id: 75,
+        id: '75',
         title: 'Citrus Rugby Polo',
         tag: 'Heavy Knit Jersey',
         material: '320GSM Combed Cotton',
         img: '/nyuku-rugby-polo-orange-bb.png',
       },
       {
-        id: 82,
+        id: '82',
         title: 'NYÜKU 3.0 Block Tee - Bubble Pink',
         tag: 'Heavy Graphic Tee',
         material: '280GSM Combed African Cotton',
         img: '/nyuku-tee-reflected-pink-front-bs.png',
       },
       {
-        id: 73,
+        id: '73',
         title: 'Heritage Tennis Cap',
         tag: 'Washed Headwear',
         material: 'Distressed Cotton Twill',
@@ -217,6 +217,7 @@ export function App() {
     return PRODUCTS.filter((product) => {
       const title = product.title.toLowerCase();
       const cat = (product.category || '').toLowerCase();
+      const anyProd = product as any;
 
       if (selectedCategory === 'club-leisure') {
         return (
@@ -244,13 +245,13 @@ export function App() {
       }
 
       if (selectedCategory === 'women') {
-        return product.gender === 'Women' || product.gender === 'Unisex';
+        return anyProd.gender === 'Women' || anyProd.gender === 'Unisex';
       }
 
       if (selectedCategory === 'men') {
         return (
-          product.gender === 'Men' ||
-          product.gender === 'Unisex' ||
+          anyProd.gender === 'Men' ||
+          anyProd.gender === 'Unisex' ||
           title.includes('varsity') ||
           title.includes('vest') ||
           title.includes('hoodie') ||
@@ -342,7 +343,7 @@ export function App() {
                           if (!isCenter) {
                             setActiveCoverIndex(index);
                           } else {
-                            const p = PRODUCTS.find((item) => item.id === piece.id);
+                            const p = PRODUCTS.find((item) => String(item.id) === String(piece.id));
                             if (p) handleOpenProduct(p);
                           }
                         }}
@@ -470,7 +471,7 @@ export function App() {
                 <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 items-center">
                   {[
                     {
-                      id: 7,
+                      id: '7',
                       title: 'Awning Stripe Tennis Polo - Camel',
                       cat: '280GSM PIQUÉ',
                       price: 'R700',
@@ -478,7 +479,7 @@ export function App() {
                       scale: 'scale-105',
                     },
                     {
-                      id: 61,
+                      id: '61',
                       title: 'Mineral Denim 5-Panel Camper',
                       cat: 'HEADWEAR VAULT',
                       price: 'R650',
@@ -486,7 +487,7 @@ export function App() {
                       scale: 'scale-90',
                     },
                     {
-                      id: 5,
+                      id: '5',
                       title: 'Vanilla Multi-Bubble Trackpants',
                       cat: '450GSM FLEECE',
                       price: 'R650',
@@ -497,7 +498,7 @@ export function App() {
                     <div
                       key={item.id}
                       onClick={() => {
-                        const p = PRODUCTS.find((prod) => prod.id === item.id) || PRODUCTS[0];
+                        const p = PRODUCTS.find((prod) => String(prod.id) === String(item.id)) || PRODUCTS[0];
                         handleOpenProduct(p);
                       }}
                       className="group relative flex flex-col items-center justify-center cursor-pointer select-none"
@@ -540,7 +541,7 @@ export function App() {
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          const p = PRODUCTS.find((prod) => prod.id === item.id) || PRODUCTS[0];
+                          const p = PRODUCTS.find((prod) => String(prod.id) === String(item.id)) || PRODUCTS[0];
                           handleAddToCart(p);
                         }}
                         className="mt-3 px-4 py-1.5 rounded-full border text-xs font-mono font-bold tracking-wider uppercase transition-all duration-300 opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 shadow-md bg-amber-400 text-black border-amber-300 hover:bg-amber-300"
@@ -625,7 +626,7 @@ export function App() {
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end pt-8">
                   <div className="md:col-span-6 space-y-2">
                     <span className="text-[10px] font-mono tracking-widest uppercase text-amber-500 font-bold block">
-                      ▪ Statement Slogan
+                      Statement Slogan
                     </span>
                     <h3 className="font-gothic text-2xl sm:text-4xl font-extrabold uppercase leading-tight">
                       It's Creative Energy <br /> You Can Wear.
@@ -729,7 +730,7 @@ export function App() {
                     title: 'Forged in the Culture',
                     desc: 'From late-night sketches to concrete runways. Built for those who walk with bold intention.',
                     image: '/nyuku-varsity-green-tumbler.png',
-                    productId: 58,
+                    productId: '58',
                     productName: 'Everywhere Varsity Jacket',
                     price: 'R3,850',
                     badge: 'MEMBERS ONLY',
@@ -740,7 +741,7 @@ export function App() {
                     title: 'Off-Grid Leisure Club',
                     desc: 'Neutral knit buckets, wide-wale corduroy textures, and botanical cutouts engineered for summer heat.',
                     image: '/nyuku-bucket-cream.png',
-                    productId: 26,
+                    productId: '26',
                     productName: 'Cream Corduroy Bucket Hat',
                     price: 'R320',
                   },
@@ -750,7 +751,7 @@ export function App() {
                     title: 'The Safety Pin & The Vault',
                     desc: 'Heavyweight 300GSM combed cotton drape paired with raw typography and sealed archive numbering.',
                     image: '/nyuku-tee-bottlecaps-white-front.png',
-                    productId: 62,
+                    productId: '62',
                     productName: 'Soda Bottlecaps Heavy Tee',
                     price: 'R850',
                   },
@@ -779,7 +780,7 @@ export function App() {
 
                       <button
                         onClick={() => {
-                          const p = PRODUCTS.find((prod) => prod.id === moment.productId);
+                          const p = PRODUCTS.find((prod) => String(prod.id) === String(moment.productId));
                           if (p) handleOpenProduct(p);
                         }}
                         className="absolute bottom-4 right-4 w-11 h-11 rounded-full bg-white text-black hover:bg-amber-400 flex items-center justify-center shadow-xl transition-transform duration-300 hover:scale-110 active:scale-95"
