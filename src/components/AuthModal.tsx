@@ -40,7 +40,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     if (mode === 'register') {
       const result = registerUser({ fullName, email, password });
-      if (!result.ok) {
+      if (result.ok === false) {
         setErrorMsg(result.error);
         return;
       }
@@ -56,7 +56,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       }, 900);
     } else {
       const result = loginUser(email, password);
-      if (!result.ok) {
+      if (result.ok === false) {
         setErrorMsg(result.error);
         return;
       }

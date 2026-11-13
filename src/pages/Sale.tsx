@@ -8,7 +8,7 @@ import {
   ShieldAlert,
   ArrowUpDown,
 } from 'lucide-react';
-import type { Product } from '../data/products';
+import { PRODUCTS, type Product } from '../data/products';
 
 interface SaleProps {
   onAddToCart: (product: Product, size?: string) => void;
@@ -23,155 +23,28 @@ interface SaleItem extends Product {
   salePriceNumeric: number;
   discountPercent: number;
   remainingUnits: number;
-  batchLabel: string;
 }
 
-const SALE_PRODUCTS: SaleItem[] = [
-  {
-    id: 901,
-    title: 'Archive 02 Heavyweight Box Tee - Charcoal',
-    category: 'TEES',
-    price: 'R520',
-    originalPrice: 'R750',
-    salePriceNumeric: 520,
-    discountPercent: 30,
-    remainingUnits: 3,
-    batchLabel: 'BATCH 02 VAULT',
-    material: '280GSM Combed African Cotton • Puff Print',
-    description:
-      'Final archival allocation from Batch 02. Cut in an oversized boxy silhouette with high-density tonal NYÜKU chest print.',
-    images: {
-      front: '/nyuku-tee-reflected-black-front-bs.png',
-    },
-    availableSizes: ['S', 'M', 'L'],
-  },
-  {
-    id: 902,
-    title: 'Citrus Club Piqué Rugby Polo',
-    category: 'TOPS',
-    price: 'R640',
-    originalPrice: 'R850',
-    salePriceNumeric: 640,
-    discountPercent: 25,
-    remainingUnits: 4,
-    batchLabel: 'SEASONAL MARKDOWN',
-    material: '320GSM Heavy Combed Cotton Jersey',
-    description:
-      'Country club leisure knit engineered with contrast collar detailing and embroidered syndicate crest.',
-    images: {
-      front: '/nyuku-rugby-polo-orange-bb.png',
-    },
-    availableSizes: ['M', 'L', 'XL'],
-  },
-  {
-    id: 903,
-    title: 'Botanical Corduroy Bucket Hat - Plum',
-    category: 'HEADWEAR',
-    price: 'R220',
-    originalPrice: 'R320',
-    salePriceNumeric: 220,
-    discountPercent: 31,
-    remainingUnits: 2,
-    batchLabel: 'FINAL 2 UNITS',
-    material: '100% Wide-Wale Cotton Corduroy',
-    description:
-      'Sun-washed wide-wale corduroy bucket hat finished with tonal stitched eyelets and woven interior label.',
-    images: {
-      front: '/nyuku-bucket-purple-front.png',
-    },
-    availableSizes: ['ONE SIZE'],
-  },
-  {
-    id: 904,
-    title: 'Dictionary Sky Fleece Hoodie',
-    category: 'OUTERWEAR',
-    price: 'R980',
-    originalPrice: 'R1,350',
-    salePriceNumeric: 980,
-    discountPercent: 27,
-    remainingUnits: 3,
-    batchLabel: 'ARCHIVE CLEARANCE',
-    material: '450GSM Heavyweight Loopback French Terry',
-    description:
-      'Drop-shoulder 450GSM fleece pullover featuring custom northern dialect typography across the back panel.',
-    images: {
-      front: '/nyuku-hoodie-dictionary-sky.png',
-    },
-    availableSizes: ['S', 'M', 'XL'],
-  },
-  {
-    id: 905,
-    title: 'Vanilla Multi-Bubble Fleece Trackpants',
-    category: 'BOTTOMS',
-    price: 'R490',
-    originalPrice: 'R650',
-    salePriceNumeric: 490,
-    discountPercent: 25,
-    remainingUnits: 5,
-    batchLabel: 'SEASONAL MARKDOWN',
-    material: '450GSM Brushed Cotton Fleece',
-    description:
-      'Relaxed wide-leg fleece trackpants with elasticated cuffs, deep welt pockets, and puff-ink mascot graphics.',
-    images: {
-      front: '/nyuku-trackpants-cream-front-bs.png',
-    },
-    availableSizes: ['S', 'M', 'L'],
-  },
-  {
-    id: 906,
-    title: 'Heritage Washed Tennis Cap - Charcoal',
-    category: 'HEADWEAR',
-    price: 'R290',
-    originalPrice: 'R420',
-    salePriceNumeric: 290,
-    discountPercent: 31,
-    remainingUnits: 2,
-    batchLabel: 'FINAL 2 UNITS',
-    material: 'Distressed Heavy Brushed Cotton Twill',
-    description:
-      '6-panel unstructured dad cap with antique brass strap closure and raised syndicate tennis embroidery.',
-    images: {
-      front: '/nyuku-cap-tennis-heritage-charcoal.png',
-    },
-    availableSizes: ['ONE SIZE'],
-  },
-  {
-    id: 907,
-    title: 'Bottlecaps Moss Heavy Graphic Tee',
-    category: 'TEES',
-    price: 'R550',
-    originalPrice: 'R750',
-    salePriceNumeric: 550,
-    discountPercent: 27,
-    remainingUnits: 4,
-    batchLabel: 'BATCH 03 VAULT',
-    material: '280GSM Combed African Cotton',
-    description:
-      'Garment-dyed moss green heavyweight tee showcasing archival Zebediela bottlecap artwork.',
-    images: {
-      front: '/nyuku-tee-bottlecaps-moss.png',
-    },
-    availableSizes: ['M', 'L', 'XL'],
-  },
-  {
-    id: 908,
-    title: 'Mineral Denim 5-Panel Camper',
-    category: 'HEADWEAR',
-    price: 'R450',
-    originalPrice: 'R650',
-    salePriceNumeric: 450,
-    discountPercent: 31,
-    remainingUnits: 3,
-    batchLabel: 'ARCHIVE CLEARANCE',
-    material: '12oz Enzyme-Washed Indigo Denim',
-    description:
-      'Low-profile 5-panel camper constructed from enzyme-washed mineral denim with woven front patch.',
-    images: {
-      front: '/nyuku-cap-denim-5panel-front-bs.png',
-    },
-    availableSizes: ['ONE SIZE'],
-  },
+const SALE_OVERRIDES: Array<{
+  matchId: number;
+  discountPercent: number;
+  remainingUnits: number;
+}> = [
+  { matchId: 81, discountPercent: 30, remainingUnits: 3 },
+  { matchId: 75, discountPercent: 25, remainingUnits: 4 },
+  { matchId: 26, discountPercent: 31, remainingUnits: 2 },
+  { matchId: 70, discountPercent: 27, remainingUnits: 3 },
+  { matchId: 41, discountPercent: 25, remainingUnits: 5 },
+  { matchId: 73, discountPercent: 31, remainingUnits: 2 },
+  { matchId: 71, discountPercent: 27, remainingUnits: 4 },
+  { matchId: 65, discountPercent: 31, remainingUnits: 3 },
 ];
+
+const parsePriceZAR = (priceStr: string): number => {
+  const numeric = priceStr.replace(/[^0-9.]/g, '');
+  const val = parseFloat(numeric);
+  return isNaN(val) ? 750 : val;
+};
 
 export const Sale: React.FC<SaleProps> = ({
   onAddToCart,
@@ -184,13 +57,36 @@ export const Sale: React.FC<SaleProps> = ({
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'discount-desc'>('featured');
   const [selectedSizes, setSelectedSizes] = useState<Record<number, string>>({});
 
-  const categories = ['ALL', 'TEES', 'TOPS', 'OUTERWEAR', 'BOTTOMS', 'HEADWEAR'];
+  const saleProducts: SaleItem[] = useMemo(() => {
+    return SALE_OVERRIDES.map((cfg, idx) => {
+      const baseProduct =
+        PRODUCTS.find((p) => Number(p.id) === cfg.matchId) ||
+        PRODUCTS[idx % PRODUCTS.length];
+
+      const origNumeric = parsePriceZAR(baseProduct.price);
+      const saleNumeric = Math.round((origNumeric * (100 - cfg.discountPercent)) / 100 / 10) * 10;
+
+      return {
+        ...baseProduct,
+        originalPrice: `R${origNumeric.toLocaleString('en-ZA')}`,
+        price: `R${saleNumeric.toLocaleString('en-ZA')}`,
+        salePriceNumeric: saleNumeric,
+        discountPercent: cfg.discountPercent,
+        remainingUnits: cfg.remainingUnits,
+      };
+    });
+  }, []);
+
+  const categories = useMemo(() => {
+    const uniqueCats = Array.from(new Set(saleProducts.map((p) => p.category)));
+    return ['ALL', ...uniqueCats];
+  }, [saleProducts]);
 
   const filteredProducts = useMemo(() => {
     const list =
       selectedCategory === 'ALL'
-        ? [...SALE_PRODUCTS]
-        : SALE_PRODUCTS.filter((item) => item.category === selectedCategory);
+        ? [...saleProducts]
+        : saleProducts.filter((item) => item.category === selectedCategory);
 
     if (sortBy === 'price-asc') {
       list.sort((a, b) => a.salePriceNumeric - b.salePriceNumeric);
@@ -199,11 +95,14 @@ export const Sale: React.FC<SaleProps> = ({
     }
 
     return list;
-  }, [selectedCategory, sortBy]);
+  }, [saleProducts, selectedCategory, sortBy]);
 
   const getActiveSize = (item: SaleItem) => {
-    if (selectedSizes[Number(item.id)]) return selectedSizes[Number(item.id)];
-    return item.availableSizes?.[0] || 'M';
+    const id = Number(item.id);
+    if (selectedSizes[id]) return selectedSizes[id];
+    if (item.sizes && item.sizes.length > 0) return item.sizes[0].size;
+    if (item.availableSizes && item.availableSizes.length > 0) return item.availableSizes[0];
+    return 'M';
   };
 
   return (
@@ -299,7 +198,12 @@ export const Sale: React.FC<SaleProps> = ({
         {filteredProducts.map((item) => {
           const isWishlisted = wishlistIds.includes(Number(item.id));
           const activeSize = getActiveSize(item);
-          const sizes = item.availableSizes || ['S', 'M', 'L'];
+          const sizes =
+            item.sizes && item.sizes.length > 0
+              ? item.sizes.map((s) => s.size)
+              : item.availableSizes && item.availableSizes.length > 0
+              ? item.availableSizes
+              : ['S', 'M', 'L'];
 
           return (
             <div
