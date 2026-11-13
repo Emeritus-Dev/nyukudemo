@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Navbar } from './components/Navbar';
 import type { NavigationPage } from './components/Navbar';
-import { Footer } from './components/Footer';
+import { Footer, type ProfileTab } from './components/Footer';
 import Shop from './pages/Shop';
+import { Sale } from './pages/Sale';
 import { Profile } from './pages/profile/Profile';
 import { About } from './pages/About';
 import { CartDrawer } from './components/CartDrawer';
@@ -10,6 +11,7 @@ import { ProductModal } from './components/ProductModal';
 import { AuthModal } from './components/AuthModal';
 import { PRODUCTS } from './data/products';
 import type { Product } from './data/products';
+import { getActiveUser, logoutUser, type NyukuUser } from './utils/authStorage';
 import {
   ChevronLeft,
   ChevronRight,
@@ -22,6 +24,8 @@ import {
 
 export function App() {
   const [currentPage, setCurrentPage] = useState<NavigationPage>('home');
+  const [profileTab, setProfileTab] = useState<ProfileTab>('membership');
+  const [currentUser, setCurrentUser] = useState<NyukuUser | null>(() => getActiveUser());
   const [cart, setCart] = useState<{ product: Product; size: string; quantity: number }[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
@@ -84,7 +88,10 @@ export function App() {
     setIsDark((prev) => !prev);
   };
 
-  const handleNavigate = (page: NavigationPage) => {
+  const handleNavigate = (page: NavigationPage, targetProfileTab?: ProfileTab) => {
+    if (targetProfileTab) {
+      setProfileTab(targetProfileTab);
+    }
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -97,6 +104,16 @@ export function App() {
   const handleOpenAuth = (mode: 'login' | 'register') => {
     setAuthMode(mode);
     setIsAuthOpen(true);
+  };
+
+  const handleAuthSuccess = (user: NyukuUser) => {
+    setCurrentUser(user);
+  };
+
+  const handleLogout = () => {
+    logoutUser();
+    setCurrentUser(null);
+    handleNavigate('home');
   };
 
   const handleAddToCart = (product: Product, size = 'M') => {
@@ -152,6 +169,10 @@ export function App() {
     setCart((prev) =>
       prev.filter((item) => !(Number(item.product.id) === Number(productId) && item.size === size))
     );
+  };
+
+  const handleClearCart = () => {
+    setCart([]);
   };
 
   const totalCartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -275,12 +296,16 @@ export function App() {
 
       {wishlistToast && (
         <div className="fixed bottom-6 right-6 z-50 animate-bounce">
-          <div className={`p-4 rounded-2xl shadow-2xl border flex items-center gap-3 backdrop-blur-xl ${
-            isDark ? 'bg-zinc-900/95 border-amber-400/30 text-white' : 'bg-white/95 border-slate-300 text-slate-900'
-          }`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-              wishlistToast.active ? 'bg-amber-400 text-black' : 'bg-zinc-700 text-zinc-300'
-            }`}>
+          <div
+            className={`p-4 rounded-2xl shadow-2xl border flex items-center gap-3 backdrop-blur-xl ${
+              isDark ? 'bg-zinc-900/95 border-amber-400/30 text-white' : 'bg-white/95 border-slate-300 text-slate-900'
+            }`}
+          >
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                wishlistToast.active ? 'bg-amber-400 text-black' : 'bg-zinc-700 text-zinc-300'
+              }`}
+            >
               <Heart className={`w-4 h-4 ${wishlistToast.active ? 'fill-black' : ''}`} />
             </div>
             <div className="text-left font-mono text-xs">
@@ -293,7 +318,7 @@ export function App() {
 
       <main className="flex-grow">
         {currentPage === 'home' && (
-          <div className="pt-24 pb-24 space-y-16 overflow-hidden select-none">
+          <div className="pt-24 pb-0 space-y-16 overflow-hidden select-none">
             <section className="relative pt-6 pb-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
               <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[34rem] h-[28rem] bg-emerald-500/15 rounded-full blur-[130px] pointer-events-none" />
               <div className="absolute top-6 right-10 w-72 h-72 bg-amber-500/10 rounded-full blur-[100px] pointer-events-none" />
@@ -819,34 +844,64 @@ export function App() {
               </div>
             </section>
 
-            <section className="p-8 sm:p-16 lg:p-20 relative overflow-hidden bg-black text-white border-t border-white/10">
-              <div className="max-w-7xl mx-auto space-y-12">
-                <h2 className="font-gothic text-3xl sm:text-6xl lg:text-7xl font-black uppercase tracking-tight max-w-4xl leading-[1.02]">
-                  Every piece we create reflects the grind behind it.
-                </h2>
+            {/* CLOSING BRAND MANIFESTO + VIP CARD PREVIEW */}
+            <section className="p-8 sm:p-16 lg:p-20 pb-10 relative overflow-hidden bg-black text-white border-t border-white/10">
+              <div className="max-w-7xl mx-auto space-y-12 relative z-10">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center text-left">
+                  <div className="lg:col-span-7 space-y-6">
+                    <h2 className="font-gothic text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight leading-[1.02]">
+                      Every piece we create reflects the grind behind it.
+                    </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-8 border-t border-white/10 text-xs font-mono text-zinc-400">
-                  <div className="md:col-span-4 space-y-2">
-                    <span className="text-white font-bold uppercase tracking-wider block">Archive Provenance</span>
-                    <p className="leading-relaxed">
-                      Born and established in Zebediela, Limpopo. Crafted from sustainably combed 280GSM–450GSM African cottons and custom cartoon letter typography.
-                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-white/10 text-xs font-mono text-zinc-400">
+                      <div className="space-y-2">
+                        <span className="text-white font-bold uppercase tracking-wider block">
+                          Archive Provenance
+                        </span>
+                        <p className="leading-relaxed">
+                          Born and established in Zebediela, Limpopo. Crafted from sustainably combed 280GSM–450GSM African cottons and custom cartoon letter typography.
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <span className="text-white font-bold uppercase tracking-wider block">
+                          The Syndicate Heritage
+                        </span>
+                        <p className="leading-relaxed">
+                          Translating regional northern dialect and country club leisure into limited streetwear collector drops.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 flex flex-wrap items-center gap-4">
+                      <button
+                        type="button"
+                        onClick={() => handleNavigate('profile', 'membership')}
+                        className="px-6 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-mono text-xs font-black uppercase tracking-wider transition-all shadow-lg cursor-pointer"
+                      >
+                        Inspect Syndicate Pass
+                      </button>
+                      <span className="text-amber-400 font-mono font-bold uppercase tracking-widest text-sm">
+                        [ZEBEDIELA, LIMPOPO, ZA]
+                      </span>
+                    </div>
                   </div>
-                  <div className="md:col-span-4 space-y-2">
-                    <span className="text-white font-bold uppercase tracking-wider block">The Syndicate Heritage</span>
-                    <p className="leading-relaxed">
-                      Translating regional northern dialect and country club leisure into limited streetwear collector drops.
-                    </p>
-                  </div>
-                  <div className="md:col-span-4 flex md:justify-end items-end">
-                    <span className="text-amber-400 font-bold uppercase tracking-widest text-sm">
-                      [ZEBEDIELA, LIMPOPO, ZA]
+
+                  <div className="lg:col-span-5 flex flex-col items-center justify-center relative">
+                    <div className="absolute inset-4 bg-amber-400/15 rounded-full blur-3xl pointer-events-none" />
+                    <img
+                      src="/nyuku-card-gold-front.png"
+                      alt="NYÜKU Gold Archive Pass"
+                      onClick={() => handleNavigate('profile', 'membership')}
+                      className="relative z-10 w-full max-w-sm object-contain drop-shadow-[0_25px_40px_rgba(0,0,0,0.9)] hover:scale-105 transition-transform duration-500 cursor-pointer"
+                    />
+                    <span className="mt-3 text-[10px] font-mono uppercase tracking-widest text-zinc-400">
+                      Gold Archive Tier • 15% Lifetime Privilege
                     </span>
                   </div>
                 </div>
 
-                <div className="pt-12 text-center select-none pointer-events-none">
-                  <span className="font-gothic font-black text-[18vw] leading-none tracking-tight text-white/[0.05] uppercase block">
+                <div className="pt-8 border-t border-white/5 text-center select-none pointer-events-none overflow-hidden">
+                  <span className="font-gothic font-black text-[9.5vw] leading-none tracking-tight text-white/[0.06] uppercase whitespace-nowrap block">
                     NYÜKU SOUTH AFRICA
                   </span>
                 </div>
@@ -865,8 +920,9 @@ export function App() {
         )}
 
         {currentPage === 'sale' && (
-          <Shop
+          <Sale
             onAddToCart={(product, size) => handleAddToCart(product, size || 'M')}
+            onSelectProduct={handleOpenProduct}
             onToggleWishlist={handleToggleWishlist}
             wishlistIds={wishlistIds}
             darkMode={isDark}
@@ -888,6 +944,9 @@ export function App() {
             onToggleTheme={handleToggleTheme}
             wishlistIds={wishlistIds}
             onToggleWishlist={handleToggleWishlist}
+            initialTab={profileTab}
+            currentUser={currentUser}
+            onLogout={handleLogout}
           />
         )}
       </main>
@@ -906,6 +965,7 @@ export function App() {
         onClose={() => setIsAuthOpen(false)}
         initialMode={authMode}
         isDark={isDark}
+        onAuthSuccess={handleAuthSuccess}
       />
 
       <CartDrawer
@@ -914,14 +974,17 @@ export function App() {
         items={cart}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveFromCart}
-        tier="gold"
+        onClearCart={handleClearCart}
+        tier={currentUser?.tier || 'gold'}
         isDark={isDark}
       />
 
-      <Footer
-        onNavigate={handleNavigate}
-        isDark={isDark}
-      />
+      {currentPage !== 'profile' && (
+        <Footer
+          onNavigate={handleNavigate}
+          isDark={isDark}
+        />
+      )}
     </div>
   );
 }
