@@ -646,14 +646,6 @@ export function App() {
                       className="max-h-[360px] sm:max-h-[480px] object-contain drop-shadow-[0_25px_45px_rgba(0,0,0,0.95)]"
                     />
                   </div>
-
-                  <div className="absolute -bottom-4 z-20 flex items-center gap-4 px-5 py-2 rounded-full border border-white/10 bg-black/80 backdrop-blur-xl font-mono text-[11px] text-zinc-300 shadow-2xl">
-                    <span className="text-amber-400 font-bold">BATCH 04</span>
-                    <span className="text-zinc-600">•</span>
-                    <span>AUTHENTIC COTTON</span>
-                    <span className="text-zinc-600">•</span>
-                    <span>SEALED RUN</span>
-                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end pt-8">
