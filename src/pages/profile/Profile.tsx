@@ -18,7 +18,9 @@ import {
   ChevronRight,
   MessageCircle,
   ArrowDownLeft,
-  Check
+  Check,
+  Trash2,
+  ShoppingBag,
 } from 'lucide-react';
 import type { Product } from '../../data/products';
 import { PRODUCTS } from '../../data/products';
@@ -28,6 +30,8 @@ interface ProfileProps {
   onNavigateShop?: () => void;
   isDark?: boolean;
   onToggleTheme?: () => void;
+  wishlistIds?: number[];
+  onToggleWishlist?: (product: Product) => void;
 }
 
 type ProfileTab =
@@ -43,7 +47,14 @@ type ProfileTab =
 
 type TierType = 'bronze' | 'silver' | 'gold';
 
-export function Profile({ onAddToCart, onNavigateShop, isDark = true, onToggleTheme }: ProfileProps) {
+export function Profile({
+  onAddToCart,
+  onNavigateShop,
+  isDark = true,
+  onToggleTheme,
+  wishlistIds = [],
+  onToggleWishlist,
+}: ProfileProps) {
   const [activeTab, setActiveTab] = useState<ProfileTab>('membership');
   const [selectedTier, setSelectedTier] = useState<TierType>('gold');
 
@@ -65,6 +76,8 @@ export function Profile({ onAddToCart, onNavigateShop, isDark = true, onToggleTh
   const [accountType, setAccountType] = useState('Savings');
   const [withdrawSuccess, setWithdrawSuccess] = useState<string | null>(null);
   const [withdrawError, setWithdrawError] = useState<string | null>(null);
+
+  const liveWishlistProducts = PRODUCTS.filter((p) => wishlistIds.includes(Number(p.id)));
 
   const TIER_CONFIG = {
     bronze: {
@@ -177,7 +190,7 @@ export function Profile({ onAddToCart, onNavigateShop, isDark = true, onToggleTh
     { id: 'orders', label: 'Orders & Receipts', icon: Package },
     { id: 'returns', label: 'Returns & Exchange', icon: RotateCcw },
     { id: 'wallet', label: 'Nyüku Wallet (ZAR)', icon: Wallet },
-    { id: 'wishlist', label: 'Wishlist (4)', icon: Heart },
+    { id: 'wishlist', label: `Wishlist (${liveWishlistProducts.length})`, icon: Heart },
     { id: 'waitlist', label: 'Drop Waitlist', icon: Clock },
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'help', label: 'Help Centre', icon: HelpCircle },
@@ -680,34 +693,76 @@ export function Profile({ onAddToCart, onNavigateShop, isDark = true, onToggleTh
           {activeTab === 'wishlist' && (
             <div className="space-y-6 rounded-3xl p-5 sm:p-8 lg:p-10 border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-950/80 shadow-2xl backdrop-blur-xl text-left">
               <div className="flex items-center justify-between border-b pb-4 border-zinc-200 dark:border-white/10">
-                <h2 className="font-gothic text-2xl sm:text-3xl font-black uppercase tracking-tight">
-                  Archived Wishlist
-                </h2>
-                <span className="text-xs font-mono text-zinc-400">4 Items Saved</span>
+                <div>
+                  <h2 className="font-gothic text-2xl sm:text-3xl font-black uppercase tracking-tight">
+                    Live Archive Wishlist
+                  </h2>
+                  <p className="text-xs font-mono text-zinc-500 dark:text-zinc-400 mt-0.5">
+                    Pieces you have hearted across the Nyüku catalog.
+                  </p>
+                </div>
+                <span className="text-xs font-mono text-amber-500 font-bold">
+                  {liveWishlistProducts.length} {liveWishlistProducts.length === 1 ? 'Item' : 'Items'} Saved
+                </span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                {PRODUCTS.slice(0, 4).map((prod) => (
-                  <div
-                    key={prod.id}
-                    className="p-3.5 sm:p-4 rounded-2xl border border-zinc-200 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 flex items-center gap-3 sm:gap-4"
-                  >
-                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-black overflow-hidden shrink-0">
-                      <img src={prod.images.front} alt={prod.title} className="w-full h-full object-cover" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-xs font-bold font-gothic truncate">{prod.title}</h4>
-                      <p className="font-mono text-xs text-amber-500 font-bold mt-0.5">{prod.price}</p>
-                    </div>
-                    <button
-                      onClick={() => onAddToCart && onAddToCart(prod)}
-                      className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-amber-400 text-black text-[10px] font-mono font-bold uppercase tracking-wider shrink-0"
-                    >
-                      + Bag
-                    </button>
+              {liveWishlistProducts.length === 0 ? (
+                <div className="py-16 text-center space-y-4">
+                  <div className="w-14 h-14 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 flex items-center justify-center mx-auto">
+                    <Heart className="w-7 h-7" />
                   </div>
-                ))}
-              </div>
+                  <h3 className="font-gothic text-lg font-bold uppercase">Your Wishlist is Empty</h3>
+                  <p className="text-xs font-mono text-zinc-400 max-w-sm mx-auto leading-relaxed">
+                    Tap the heart icon on any piece in the shop catalog or product viewer to save it here automatically.
+                  </p>
+                  {onNavigateShop && (
+                    <button
+                      type="button"
+                      onClick={onNavigateShop}
+                      className="px-6 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-black text-xs font-mono font-bold uppercase tracking-wider transition-colors shadow-md cursor-pointer"
+                    >
+                      Explore Drop Catalog
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  {liveWishlistProducts.map((prod) => (
+                    <div
+                      key={prod.id}
+                      className="p-3.5 sm:p-4 rounded-2xl border border-zinc-200 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 flex items-center gap-3 sm:gap-4"
+                    >
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-black overflow-hidden shrink-0 p-1 flex items-center justify-center">
+                        <img src={prod.images.front} alt={prod.title} className="w-full h-full object-contain" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-xs font-bold font-gothic truncate">{prod.title}</h4>
+                        <p className="font-mono text-xs text-amber-500 font-bold mt-0.5">{prod.price}</p>
+                      </div>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => onAddToCart && onAddToCart(prod, 'M')}
+                          className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-black text-[10px] font-mono font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-colors"
+                        >
+                          <ShoppingBag className="w-3 h-3" />
+                          <span>+ Bag</span>
+                        </button>
+                        {onToggleWishlist && (
+                          <button
+                            type="button"
+                            onClick={() => onToggleWishlist(prod)}
+                            className="p-1.5 rounded-lg border border-zinc-300 dark:border-white/10 text-zinc-400 hover:text-red-400 hover:border-red-400/40 transition-colors cursor-pointer"
+                            title="Remove from wishlist"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 

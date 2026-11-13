@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, ShoppingBag, ShieldCheck, Sparkles, Check } from 'lucide-react';
+import { X, ShoppingBag, Check, ShieldAlert, Sparkles, ChevronRight, Heart } from 'lucide-react';
 import type { Product } from '../data/products';
 
 interface ProductModalProps {
@@ -7,6 +7,9 @@ interface ProductModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddToCart: (product: Product, size: string) => void;
+  isWishlisted?: boolean;
+  onToggleWishlist?: (product: Product) => void;
+  isDark?: boolean;
 }
 
 export const ProductModal: React.FC<ProductModalProps> = ({
@@ -14,191 +17,232 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   isOpen,
   onClose,
   onAddToCart,
+  isWishlisted = false,
+  onToggleWishlist,
+  isDark = true,
 }) => {
   if (!isOpen || !product) return null;
 
-  // Extract all available image angles from the product
-  const imageViews = [
-    { key: 'front', label: 'Front', url: product.images.front },
-    { key: 'side', label: 'Side', url: product.images.side },
-    { key: 'back', label: 'Back', url: product.images.back },
-    { key: 'folded', label: 'Detail / Angle', url: product.images.folded },
-  ].filter((view): view is { key: string; label: string; url: string } => Boolean(view.url));
+  const availableSizes =
+    product.sizes && product.sizes.length > 0
+      ? product.sizes.map((s) => s.size)
+      : product.availableSizes && product.availableSizes.length > 0
+      ? product.availableSizes
+      : ['S', 'M', 'L', 'XL'];
 
-  const [activeImage, setActiveImage] = useState<string>(product.images.front);
-  const [selectedSize, setSelectedSize] = useState<string>(
-    product.sizes?.[0]?.size || 'One Size'
-  );
-  const [isAdded, setIsAdded] = useState(false);
+  const [selectedSize, setSelectedSize] = useState<string>(availableSizes[0] || 'M');
+  const [activeAngleKey, setActiveAngleKey] = useState<string>('front');
+  const [isAdded, setIsAdded] = useState<boolean>(false);
+
+  const imagesMap = product.images as unknown as Record<string, string | undefined>;
+  const activeImageSrc = imagesMap[activeAngleKey] || product.images.front;
+
+  const currentSizeObj = product.sizes?.find((s) => s.size === selectedSize);
+  const currentStock = currentSizeObj?.stock ?? 12;
 
   const handleAdd = () => {
     onAddToCart(product, selectedSize);
     setIsAdded(true);
-    setTimeout(() => setIsAdded(false), 1500);
+    setTimeout(() => {
+      setIsAdded(false);
+      onClose();
+    }, 600);
   };
 
-  const selectedStock =
-    product.sizes?.find((s) => s.size === selectedSize)?.stock ?? 10;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 overflow-y-auto">
-      {/* Blurred Backdrop */}
+    <div className="fixed inset-0 z-50 overflow-y-auto select-none">
       <div
-        onClick={onClose}
         className="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity"
+        onClick={onClose}
       />
 
-      {/* Modal Container */}
-      <div className="relative w-full max-w-4xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl overflow-hidden z-10 transition-colors my-auto">
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-white/70 dark:bg-zinc-900/70 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 hover:text-black dark:hover:text-white transition-all hover:scale-105"
+      <div className="min-h-screen px-4 text-center flex items-center justify-center p-4">
+        <div
+          className={`inline-block w-full max-w-4xl my-8 text-left align-middle transition-all transform rounded-3xl border shadow-2xl overflow-hidden relative ${
+            isDark
+              ? 'bg-[#0B1120] border-white/10 text-white shadow-black/90'
+              : 'bg-white border-slate-200 text-slate-900 shadow-slate-300'
+          }`}
         >
-          <X className="w-5 h-5" />
-        </button>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 sm:p-8">
-          {/* Left Column: Image Angles & Gallery */}
-          <div className="space-y-4 flex flex-col justify-between">
-            {/* Main Stage Image */}
-            <div className="relative aspect-square rounded-2xl bg-zinc-100 dark:bg-zinc-900 overflow-hidden border border-zinc-200 dark:border-zinc-850 flex items-center justify-center group">
-              <img
-                src={activeImage}
-                alt={product.title}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-              <span className="absolute bottom-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-black/60 backdrop-blur-md text-white uppercase border border-white/10">
-                {product.category}
-              </span>
-            </div>
-
-            {/* Thumbnail Multi-Angle Switcher */}
-            {imageViews.length > 1 && (
-              <div>
-                <p className="text-[11px] font-mono uppercase tracking-wider text-zinc-500 mb-2">
-                  Select View Angle:
-                </p>
-                <div className="flex gap-2.5 overflow-x-auto pb-1">
-                  {imageViews.map((view) => {
-                    const isSelected = activeImage === view.url;
-                    return (
-                      <button
-                        key={view.key}
-                        onClick={() => setActiveImage(view.url)}
-                        className={`relative w-16 h-16 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${
-                          isSelected
-                            ? 'border-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.5)] scale-105'
-                            : 'border-transparent opacity-60 hover:opacity-100'
-                        }`}
-                      >
-                        <img
-                          src={view.url}
-                          alt={view.label}
-                          className="w-full h-full object-cover"
-                        />
-                        <span className="absolute bottom-0 inset-x-0 bg-black/70 text-[9px] text-white text-center py-0.5 font-bold uppercase truncate">
-                          {view.label}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+          <div className="absolute top-5 right-5 z-20 flex items-center gap-2">
+            {onToggleWishlist && (
+              <button
+                type="button"
+                onClick={() => onToggleWishlist(product)}
+                className={`w-10 h-10 rounded-full border backdrop-blur-md flex items-center justify-center transition-all cursor-pointer ${
+                  isWishlisted
+                    ? 'bg-red-500 border-red-500 text-white'
+                    : 'bg-black/40 border-white/10 text-zinc-400 hover:text-red-400'
+                }`}
+                title={isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
+              >
+                <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-white' : ''}`} />
+              </button>
             )}
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-10 h-10 rounded-full border border-white/10 bg-black/40 backdrop-blur-md text-zinc-400 hover:text-white hover:bg-amber-400 hover:text-black flex items-center justify-center transition-all cursor-pointer"
+              aria-label="Close modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
-          {/* Right Column: Specs & Ordering */}
-          <div className="flex flex-col justify-between space-y-6">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-400 text-black uppercase">
-                  Verified Archive
+          <div className="grid grid-cols-1 md:grid-cols-12">
+            <div
+              className={`md:col-span-6 p-6 sm:p-8 flex flex-col justify-between relative border-b md:border-b-0 md:border-r ${
+                isDark ? 'bg-zinc-950/80 border-white/10' : 'bg-slate-50 border-slate-200'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono font-bold tracking-widest uppercase px-3 py-1 rounded-full border border-amber-400/30 bg-amber-400/10 text-amber-400">
+                  BATCH 04 // LIMPOPO ARCHIVE
                 </span>
-                <span className="text-xs text-zinc-400 font-mono">
+                <span className="text-[10px] font-mono text-zinc-400 uppercase">
                   ID: #{String(product.id).padStart(3, '0')}
                 </span>
               </div>
 
-              <h2 className="text-2xl sm:text-3xl font-bold font-gothic tracking-wider text-zinc-900 dark:text-white leading-tight">
-                {product.title}
-              </h2>
-
-              <p className="text-2xl font-extrabold font-mono text-amber-500 dark:text-amber-400 mt-2">
-                {product.price}
-              </p>
-
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-4 leading-relaxed">
-                {product.description}
-              </p>
-
-              {/* Material Details */}
-              <div className="mt-4 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 text-xs">
-                <span className="text-zinc-400 uppercase font-mono font-bold">Material: </span>
-                <span className="text-zinc-800 dark:text-zinc-200">{product.material}</span>
+              <div className="relative aspect-square my-6 flex items-center justify-center">
+                <div className="absolute inset-4 rounded-full bg-amber-400/15 blur-3xl pointer-events-none" />
+                <img
+                  src={activeImageSrc}
+                  alt={product.title}
+                  className="w-full h-full object-contain filter drop-shadow-[0_20px_32px_rgba(0,0,0,0.65)] transition-all duration-300 transform hover:scale-105"
+                />
               </div>
 
-              {/* Available Sizes Picker */}
-              <div className="mt-6">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-xs font-mono uppercase tracking-wider font-bold text-zinc-500">
-                    Select Size
-                  </span>
-                  <span className="text-[11px] font-mono text-zinc-400">
-                    {selectedStock <= 5 ? (
-                      <span className="text-rose-500 font-bold">Only {selectedStock} left!</span>
-                    ) : (
-                      `${selectedStock} in stock`
-                    )}
-                  </span>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  {product.sizes.map((s) => {
-                    const isSelected = selectedSize === s.size;
+              <div className="flex items-center justify-center gap-2 overflow-x-auto pt-2 no-scrollbar">
+                {Object.entries(product.images)
+                  .filter(([, src]) => Boolean(src))
+                  .map(([key, src]) => {
+                    const isActive = activeAngleKey === key;
                     return (
                       <button
-                        key={s.size}
-                        onClick={() => setSelectedSize(s.size)}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold font-mono transition-all ${
-                          isSelected
-                            ? 'bg-amber-400 text-black shadow-md scale-105'
-                            : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400'
+                        key={key}
+                        type="button"
+                        onClick={() => setActiveAngleKey(key)}
+                        className={`w-14 h-14 rounded-xl border p-1 transition-all shrink-0 cursor-pointer ${
+                          isActive
+                            ? 'border-amber-400 bg-amber-400/10 scale-105'
+                            : isDark
+                            ? 'border-white/10 bg-white/5 hover:border-white/30'
+                            : 'border-slate-200 bg-white hover:border-slate-400'
                         }`}
                       >
-                        {s.size}
+                        <img
+                          src={src}
+                          alt={key}
+                          className="w-full h-full object-contain"
+                        />
                       </button>
                     );
                   })}
-                </div>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="space-y-3 pt-4 border-t border-zinc-200 dark:border-zinc-800">
-              <button
-                onClick={handleAdd}
-                className={`w-full py-3.5 rounded-2xl font-extrabold uppercase tracking-wider text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all ${
-                  isAdded
-                    ? 'bg-emerald-500 text-white scale-[1.01]'
-                    : 'bg-amber-400 hover:bg-amber-300 text-black hover:scale-[1.01]'
-                }`}
-              >
-                {isAdded ? (
-                  <>
-                    <Check className="w-4 h-4" /> Added to Bag
-                  </>
-                ) : (
-                  <>
-                    <ShoppingBag className="w-4 h-4" /> Add To Bag ({selectedSize})
-                  </>
-                )}
-              </button>
+            <div className="md:col-span-6 p-6 sm:p-8 flex flex-col justify-between space-y-6">
+              <div className="space-y-4">
+                <div className="space-y-1">
+                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-amber-400">
+                    {product.category}
+                  </span>
+                  <h3 className="font-gothic text-2xl sm:text-3xl font-black uppercase tracking-tight">
+                    {product.title}
+                  </h3>
+                  <p className="font-mono text-xl font-bold text-amber-400 pt-1">
+                    {product.price}
+                  </p>
+                </div>
 
-              <p className="text-[10px] text-center text-zinc-400 flex items-center justify-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                Door Delivery across South Africa • 14-Day Free Exchange
-              </p>
+                <p className="text-xs leading-relaxed font-sans text-slate-600 dark:text-zinc-300">
+                  {product.description}
+                </p>
+
+                <div
+                  className={`p-3.5 rounded-2xl border text-xs font-mono space-y-1 ${
+                    isDark ? 'border-white/10 bg-white/[0.03]' : 'border-slate-200 bg-slate-50'
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 text-amber-400 font-bold">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>TEXTILE PROVENANCE & MATERIAL</span>
+                  </div>
+                  <p className="text-zinc-400 text-[11px] leading-relaxed">
+                    {product.material}
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs font-mono">
+                    <span className="text-zinc-400 uppercase font-bold">Select Sizing</span>
+                    <span className="text-amber-400 font-bold">
+                      {currentStock <= 5 ? (
+                        <span className="flex items-center gap-1 text-red-400">
+                          <ShieldAlert className="w-3 h-3" />
+                          Only {currentStock} left in stock
+                        </span>
+                      ) : (
+                        `${currentStock} units available`
+                      )}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    {availableSizes.map((size) => {
+                      const isSelected = selectedSize === size;
+                      return (
+                        <button
+                          key={size}
+                          type="button"
+                          onClick={() => setSelectedSize(size)}
+                          className={`min-w-11 h-10 px-3 rounded-xl font-mono text-xs font-bold uppercase tracking-wider transition-all border cursor-pointer ${
+                            isSelected
+                              ? 'bg-amber-400 text-black border-amber-300 font-black shadow-md scale-105'
+                              : isDark
+                              ? 'border-white/10 bg-white/5 text-zinc-300 hover:border-amber-400/50 hover:text-white'
+                              : 'border-slate-200 bg-white text-slate-700 hover:border-amber-400/50 hover:text-black'
+                          }`}
+                        >
+                          {size}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3 pt-4 border-t border-inherit/20">
+                <button
+                  type="button"
+                  onClick={handleAdd}
+                  disabled={isAdded}
+                  className={`w-full py-4 px-6 rounded-2xl font-gothic text-sm font-black uppercase tracking-wider transition-all shadow-xl flex items-center justify-center gap-2 cursor-pointer ${
+                    isAdded
+                      ? 'bg-emerald-500 text-black'
+                      : 'bg-amber-400 hover:bg-amber-300 text-black active:scale-95'
+                  }`}
+                >
+                  {isAdded ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      <span>Added to Syndicate Bag</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingBag className="w-4 h-4" />
+                      <span>Add to Bag • {product.price}</span>
+                      <ChevronRight className="w-4 h-4 ml-auto" />
+                    </>
+                  )}
+                </button>
+
+                <p className="text-[10px] font-mono text-center text-zinc-500 uppercase tracking-widest">
+                  Free Nationwide Courier • Direct From Zebediela, Limpopo
+                </p>
+              </div>
             </div>
           </div>
         </div>

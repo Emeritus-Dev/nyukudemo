@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Navbar } from './components/Navbar';
 import type { NavigationPage } from './components/Navbar';
+import { Footer } from './components/Footer';
+import Shop from './pages/Shop';
 import { Profile } from './pages/profile/Profile';
 import { About } from './pages/About';
 import { CartDrawer } from './components/CartDrawer';
@@ -9,20 +11,17 @@ import { AuthModal } from './components/AuthModal';
 import { PRODUCTS } from './data/products';
 import type { Product } from './data/products';
 import {
-  SlidersHorizontal,
   ChevronLeft,
   ChevronRight,
   ShoppingBag,
   Flame,
   Compass,
   ArrowUpRight,
+  Heart,
 } from 'lucide-react';
-
-type CatalogCategoryFilter = 'all' | 'men' | 'women' | 'accessories' | 'club-leisure';
 
 export function App() {
   const [currentPage, setCurrentPage] = useState<NavigationPage>('home');
-  const [selectedCategory, setSelectedCategory] = useState<CatalogCategoryFilter>('all');
   const [cart, setCart] = useState<{ product: Product; size: string; quantity: number }[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
@@ -31,6 +30,20 @@ export function App() {
 
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+
+  const [wishlistToast, setWishlistToast] = useState<{ message: string; title: string; active: boolean } | null>(null);
+
+  const [wishlistIds, setWishlistIds] = useState<number[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('nyuku_live_wishlist');
+        return stored ? JSON.parse(stored) : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  });
 
   const [activeCoverIndex, setActiveCoverIndex] = useState(3);
   const [isDragging, setIsDragging] = useState(false);
@@ -43,6 +56,14 @@ export function App() {
     }
     return true;
   });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('nyuku_live_wishlist', JSON.stringify(wishlistIds));
+    } catch (err) {
+      console.error(err);
+    }
+  }, [wishlistIds]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -63,6 +84,11 @@ export function App() {
     setIsDark((prev) => !prev);
   };
 
+  const handleNavigate = (page: NavigationPage) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleOpenProduct = (product: Product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
@@ -75,10 +101,10 @@ export function App() {
 
   const handleAddToCart = (product: Product, size = 'M') => {
     setCart((prev) => {
-      const existing = prev.find((item) => String(item.product.id) === String(product.id) && item.size === size);
+      const existing = prev.find((item) => Number(item.product.id) === Number(product.id) && item.size === size);
       if (existing) {
         return prev.map((item) =>
-          String(item.product.id) === String(product.id) && item.size === size
+          Number(item.product.id) === Number(product.id) && item.size === size
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
@@ -88,11 +114,31 @@ export function App() {
     setIsCartOpen(true);
   };
 
-  const handleUpdateQuantity = (productId: string | number, size: string, delta: number) => {
+  const handleToggleWishlist = (product: Product) => {
+    const pId = Number(product.id);
+    setWishlistIds((prev) => {
+      const exists = prev.includes(pId);
+      const updated = exists ? prev.filter((id) => id !== pId) : [...prev, pId];
+
+      setWishlistToast({
+        title: product.title,
+        message: exists ? 'Removed from your archive wishlist' : 'Added to your live archive wishlist',
+        active: !exists,
+      });
+
+      setTimeout(() => {
+        setWishlistToast(null);
+      }, 3000);
+
+      return updated;
+    });
+  };
+
+  const handleUpdateQuantity = (productId: number, size: string, delta: number) => {
     setCart((prev) =>
       prev
         .map((item) => {
-          if (String(item.product.id) === String(productId) && item.size === size) {
+          if (Number(item.product.id) === Number(productId) && item.size === size) {
             const nextQty = item.quantity + delta;
             return nextQty > 0 ? { ...item, quantity: nextQty } : null;
           }
@@ -102,9 +148,9 @@ export function App() {
     );
   };
 
-  const handleRemoveFromCart = (productId: string | number, size: string) => {
+  const handleRemoveFromCart = (productId: number, size: string) => {
     setCart((prev) =>
-      prev.filter((item) => !(String(item.product.id) === String(productId) && item.size === size))
+      prev.filter((item) => !(Number(item.product.id) === Number(productId) && item.size === size))
     );
   };
 
@@ -113,56 +159,56 @@ export function App() {
   const CAROUSEL_PIECES = useMemo(
     () => [
       {
-        id: '71',
+        id: 71,
         title: 'Bottlecaps Sage Tee',
         tag: 'Heavy Cotton',
         material: '280GSM Combed Cotton',
         img: '/nyuku-tee-bottlecaps-moss.png',
       },
       {
-        id: '74',
+        id: 74,
         title: 'Club Quilted Puffer Vest',
         tag: 'Down Outerwear',
         material: 'Technical Matte Ripstop',
         img: '/nyuku-puffer-vest-black-bb.png',
       },
       {
-        id: '70',
+        id: 70,
         title: 'Dictionary Sky Hoodie',
         tag: 'Fleece Outerwear',
         material: '450GSM French Terry',
         img: '/nyuku-hoodie-dictionary-sky.png',
       },
       {
-        id: '81',
+        id: 81,
         title: 'NYÜKU 3.0 Block Tee - Noir',
         tag: 'Heavy Graphic Tee',
         material: '280GSM Combed African Cotton',
         img: '/nyuku-tee-reflected-black-front-bs.png',
       },
       {
-        id: '72',
+        id: 72,
         title: 'Bubble Mascot Sweats',
         tag: 'Baggy Fleece',
         material: '450GSM Loopback Cotton',
         img: '/nyuku-sweatpants-bubble-noir.png',
       },
       {
-        id: '75',
+        id: 75,
         title: 'Citrus Rugby Polo',
         tag: 'Heavy Knit Jersey',
         material: '320GSM Combed Cotton',
         img: '/nyuku-rugby-polo-orange-bb.png',
       },
       {
-        id: '82',
+        id: 82,
         title: 'NYÜKU 3.0 Block Tee - Bubble Pink',
         tag: 'Heavy Graphic Tee',
         material: '280GSM Combed African Cotton',
         img: '/nyuku-tee-reflected-pink-front-bs.png',
       },
       {
-        id: '73',
+        id: 73,
         title: 'Heritage Tennis Cap',
         tag: 'Washed Headwear',
         material: 'Distressed Cotton Twill',
@@ -211,59 +257,6 @@ export function App() {
     }
   };
 
-  const filteredProducts = useMemo(() => {
-    if (selectedCategory === 'all') return PRODUCTS;
-
-    return PRODUCTS.filter((product) => {
-      const title = product.title.toLowerCase();
-      const cat = (product.category || '').toLowerCase();
-      const anyProd = product as any;
-
-      if (selectedCategory === 'club-leisure') {
-        return (
-          title.includes('vest') ||
-          title.includes('polo') ||
-          title.includes('rugby') ||
-          title.includes('chair') ||
-          title.includes('fieldbar') ||
-          title.includes('tumbler') ||
-          cat.includes('accessories') ||
-          cat.includes('club')
-        );
-      }
-
-      if (selectedCategory === 'accessories') {
-        return (
-          title.includes('cap') ||
-          title.includes('hat') ||
-          title.includes('tumbler') ||
-          title.includes('towel') ||
-          title.includes('tote') ||
-          cat.includes('accessories') ||
-          cat.includes('headwear')
-        );
-      }
-
-      if (selectedCategory === 'women') {
-        return anyProd.gender === 'Women' || anyProd.gender === 'Unisex';
-      }
-
-      if (selectedCategory === 'men') {
-        return (
-          anyProd.gender === 'Men' ||
-          anyProd.gender === 'Unisex' ||
-          title.includes('varsity') ||
-          title.includes('vest') ||
-          title.includes('hoodie') ||
-          title.includes('polo') ||
-          title.includes('tee')
-        );
-      }
-
-      return true;
-    });
-  }, [selectedCategory]);
-
   return (
     <div
       className={`min-h-screen transition-colors duration-300 flex flex-col justify-between ${
@@ -272,16 +265,31 @@ export function App() {
     >
       <Navbar
         currentPage={currentPage}
-        onNavigate={(page) => {
-          setCurrentPage(page);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
+        onNavigate={handleNavigate}
         cartCount={totalCartCount}
         onOpenCart={() => setIsCartOpen((prev) => !prev)}
         isDark={isDark}
         onToggleTheme={handleToggleTheme}
         onOpenAuth={(mode) => handleOpenAuth(mode)}
       />
+
+      {wishlistToast && (
+        <div className="fixed bottom-6 right-6 z-50 animate-bounce">
+          <div className={`p-4 rounded-2xl shadow-2xl border flex items-center gap-3 backdrop-blur-xl ${
+            isDark ? 'bg-zinc-900/95 border-amber-400/30 text-white' : 'bg-white/95 border-slate-300 text-slate-900'
+          }`}>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+              wishlistToast.active ? 'bg-amber-400 text-black' : 'bg-zinc-700 text-zinc-300'
+            }`}>
+              <Heart className={`w-4 h-4 ${wishlistToast.active ? 'fill-black' : ''}`} />
+            </div>
+            <div className="text-left font-mono text-xs">
+              <p className="font-bold line-clamp-1">{wishlistToast.title}</p>
+              <p className="text-[11px] text-zinc-400">{wishlistToast.message}</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <main className="flex-grow">
         {currentPage === 'home' && (
@@ -343,7 +351,7 @@ export function App() {
                           if (!isCenter) {
                             setActiveCoverIndex(index);
                           } else {
-                            const p = PRODUCTS.find((item) => String(item.id) === String(piece.id));
+                            const p = PRODUCTS.find((item) => Number(item.id) === Number(piece.id));
                             if (p) handleOpenProduct(p);
                           }
                         }}
@@ -454,7 +462,7 @@ export function App() {
                   </div>
 
                   <button
-                    onClick={() => setCurrentPage('shop')}
+                    onClick={() => handleNavigate('shop')}
                     className={`group shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-full border flex flex-col items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 shadow-sm ${
                       isDark
                         ? 'border-white/20 bg-white/5 hover:bg-amber-400 hover:text-black hover:border-amber-400'
@@ -471,7 +479,7 @@ export function App() {
                 <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 items-center">
                   {[
                     {
-                      id: '7',
+                      id: 46,
                       title: 'Awning Stripe Tennis Polo - Camel',
                       cat: '280GSM PIQUÉ',
                       price: 'R700',
@@ -479,7 +487,7 @@ export function App() {
                       scale: 'scale-105',
                     },
                     {
-                      id: '61',
+                      id: 65,
                       title: 'Mineral Denim 5-Panel Camper',
                       cat: 'HEADWEAR VAULT',
                       price: 'R650',
@@ -487,7 +495,7 @@ export function App() {
                       scale: 'scale-90',
                     },
                     {
-                      id: '5',
+                      id: 41,
                       title: 'Vanilla Multi-Bubble Trackpants',
                       cat: '450GSM FLEECE',
                       price: 'R650',
@@ -498,7 +506,7 @@ export function App() {
                     <div
                       key={item.id}
                       onClick={() => {
-                        const p = PRODUCTS.find((prod) => String(prod.id) === String(item.id)) || PRODUCTS[0];
+                        const p = PRODUCTS.find((prod) => Number(prod.id) === Number(item.id)) || PRODUCTS[0];
                         handleOpenProduct(p);
                       }}
                       className="group relative flex flex-col items-center justify-center cursor-pointer select-none"
@@ -541,10 +549,10 @@ export function App() {
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          const p = PRODUCTS.find((prod) => String(prod.id) === String(item.id)) || PRODUCTS[0];
+                          const p = PRODUCTS.find((prod) => Number(prod.id) === Number(item.id)) || PRODUCTS[0];
                           handleAddToCart(p);
                         }}
-                        className="mt-3 px-4 py-1.5 rounded-full border text-xs font-mono font-bold tracking-wider uppercase transition-all duration-300 opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 shadow-md bg-amber-400 text-black border-amber-300 hover:bg-amber-300"
+                        className="mt-3 px-4 py-1.5 rounded-full border text-xs font-mono font-bold tracking-wider uppercase transition-all duration-300 opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 shadow-md bg-amber-400 text-black border-amber-300 hover:bg-amber-300 cursor-pointer"
                       >
                         + Add to Bag
                       </button>
@@ -554,8 +562,8 @@ export function App() {
 
                 <div className="relative z-20 flex justify-center -mb-4 mt-8 sm:mt-12">
                   <button
-                    onClick={() => setCurrentPage('shop')}
-                    className={`w-12 h-12 rounded-full border flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 shadow-lg ${
+                    onClick={() => handleNavigate('shop')}
+                    className={`w-12 h-12 rounded-full border flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 shadow-lg cursor-pointer ${
                       isDark
                         ? 'bg-zinc-900 border-white/20 text-white hover:bg-amber-400 hover:text-black hover:border-amber-400'
                         : 'bg-white border-slate-300 text-slate-900 hover:bg-black hover:text-white hover:border-black'
@@ -581,8 +589,8 @@ export function App() {
                       ROOTED IN THE CITRUS VALLEYS OF ZEBEDIELA, LIMPOPO. WE CRAFT HEAVYWEIGHT APPAREL ENGINEERED TO CARRY THE SPIRIT OF HOMELAND HUSTLE.
                     </p>
                     <button
-                      onClick={() => setCurrentPage('shop')}
-                      className="group inline-flex items-center gap-1.5 text-xs font-mono tracking-wider uppercase text-amber-400 hover:text-white transition-colors"
+                      onClick={() => handleNavigate('shop')}
+                      className="group inline-flex items-center gap-1.5 text-xs font-mono tracking-wider uppercase text-amber-400 hover:text-white transition-colors cursor-pointer"
                     >
                       <span>Explore Drop Vault</span>
                       <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -730,7 +738,7 @@ export function App() {
                     title: 'Forged in the Culture',
                     desc: 'From late-night sketches to concrete runways. Built for those who walk with bold intention.',
                     image: '/nyuku-varsity-green-tumbler.png',
-                    productId: '58',
+                    productId: 58,
                     productName: 'Everywhere Varsity Jacket',
                     price: 'R3,850',
                     badge: 'MEMBERS ONLY',
@@ -740,9 +748,9 @@ export function App() {
                     chapter: 'Chapter 02 // Sun-Drenched Escapism',
                     title: 'Off-Grid Leisure Club',
                     desc: 'Neutral knit buckets, wide-wale corduroy textures, and botanical cutouts engineered for summer heat.',
-                    image: '/nyuku-bucket-cream.png',
-                    productId: '26',
-                    productName: 'Cream Corduroy Bucket Hat',
+                    image: '/nyuku-bucket-purple-front.png',
+                    productId: 26,
+                    productName: 'Purple Corduroy Bucket Hat',
                     price: 'R320',
                   },
                   {
@@ -751,7 +759,7 @@ export function App() {
                     title: 'The Safety Pin & The Vault',
                     desc: 'Heavyweight 300GSM combed cotton drape paired with raw typography and sealed archive numbering.',
                     image: '/nyuku-tee-bottlecaps-white-front.png',
-                    productId: '62',
+                    productId: 62,
                     productName: 'Soda Bottlecaps Heavy Tee',
                     price: 'R850',
                   },
@@ -780,10 +788,10 @@ export function App() {
 
                       <button
                         onClick={() => {
-                          const p = PRODUCTS.find((prod) => String(prod.id) === String(moment.productId));
+                          const p = PRODUCTS.find((prod) => Number(prod.id) === Number(moment.productId));
                           if (p) handleOpenProduct(p);
                         }}
-                        className="absolute bottom-4 right-4 w-11 h-11 rounded-full bg-white text-black hover:bg-amber-400 flex items-center justify-center shadow-xl transition-transform duration-300 hover:scale-110 active:scale-95"
+                        className="absolute bottom-4 right-4 w-11 h-11 rounded-full bg-white text-black hover:bg-amber-400 flex items-center justify-center shadow-xl transition-transform duration-300 hover:scale-110 active:scale-95 cursor-pointer"
                         title="Inspect Piece"
                       >
                         <ShoppingBag className="w-4 h-4 stroke-[2]" />
@@ -848,199 +856,26 @@ export function App() {
         )}
 
         {currentPage === 'shop' && (
-          <div className="pt-28 pb-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8">
-            <div
-              className={`border-b pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4 ${
-                isDark ? 'border-zinc-800' : 'border-slate-200'
-              }`}
-            >
-              <div>
-                <h1 className="font-gothic text-4xl sm:text-5xl">Drop Archive Catalog</h1>
-                <p className="text-xs sm:text-sm mt-1 text-slate-600 dark:text-zinc-400">
-                  Click on any piece to inspect angles, materials, and available sizes.
-                </p>
-              </div>
-              <span
-                className={`text-xs font-mono px-3 py-1.5 rounded-xl border self-start sm:self-auto ${
-                  isDark
-                    ? 'bg-zinc-900 border-zinc-800 text-zinc-400'
-                    : 'bg-slate-200 border-slate-300 text-slate-700'
-                }`}
-              >
-                Showing {filteredProducts.length} of {PRODUCTS.length} Pieces
-              </span>
-            </div>
-
-            <div
-              className={`flex items-center gap-2 overflow-x-auto pb-2 border-b ${
-                isDark ? 'border-zinc-800' : 'border-slate-200'
-              }`}
-            >
-              <span className="text-xs font-mono text-slate-500 dark:text-zinc-400 uppercase flex items-center gap-1.5 mr-2 shrink-0">
-                <SlidersHorizontal className="w-3.5 h-3.5 text-amber-500" /> Filter:
-              </span>
-
-              {[
-                { id: 'all', label: 'All Archive' },
-                { id: 'men', label: 'Men' },
-                { id: 'women', label: 'Women' },
-                { id: 'accessories', label: 'Accessories & Caps' },
-                { id: 'club-leisure', label: 'Club & Leisure' },
-              ].map((filter) => {
-                const isSelected = selectedCategory === filter.id;
-                return (
-                  <button
-                    key={filter.id}
-                    onClick={() => setSelectedCategory(filter.id as CatalogCategoryFilter)}
-                    className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all shrink-0 ${
-                      isSelected
-                        ? 'bg-amber-400 text-black shadow-md scale-105'
-                        : isDark
-                          ? 'bg-zinc-900 text-zinc-300 border border-zinc-800 hover:border-amber-400/50'
-                          : 'bg-white text-slate-700 border border-slate-200 hover:border-amber-400/50 shadow-sm'
-                    }`}
-                  >
-                    {filter.label}
-                  </button>
-                );
-              })}
-            </div>
-
-            {filteredProducts.length === 0 ? (
-              <div className="py-20 text-center space-y-3">
-                <p className="text-slate-600 dark:text-zinc-400 text-base font-semibold">No items found in this category.</p>
-                <button
-                  onClick={() => setSelectedCategory('all')}
-                  className="px-4 py-2 rounded-xl bg-amber-400 text-black text-xs font-bold uppercase tracking-wider hover:bg-amber-300 transition-colors"
-                >
-                  Reset Filter
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-                {filteredProducts.map((product) => (
-                  <div
-                    key={product.id}
-                    onClick={() => handleOpenProduct(product)}
-                    className={`group rounded-2xl border p-3 sm:p-4 flex flex-col justify-between transition-all cursor-pointer relative ${
-                      isDark
-                        ? 'bg-zinc-950 border-zinc-800 hover:border-amber-400/80'
-                        : 'bg-white border-slate-200 hover:border-amber-400 shadow-sm'
-                    }`}
-                  >
-                    <div
-                      className={`relative aspect-square rounded-xl overflow-hidden mb-3 ${
-                        isDark ? 'bg-zinc-900' : 'bg-slate-100'
-                      }`}
-                    >
-                      <img
-                        src={product.images.front}
-                        alt={product.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                      />
-                    </div>
-                    <div>
-                      <span className="text-[10px] uppercase font-mono text-slate-500 dark:text-zinc-400">{product.category}</span>
-                      <h3 className="text-xs sm:text-sm font-semibold line-clamp-1 mt-0.5">{product.title}</h3>
-                      <p className="font-mono font-bold text-amber-600 dark:text-amber-500 mt-1">{product.price}</p>
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleAddToCart(product);
-                      }}
-                      className="mt-3 w-full py-2 rounded-xl bg-amber-400 text-black text-xs font-bold uppercase transition-colors hover:bg-amber-300"
-                    >
-                      Quick Add
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <Shop
+            onAddToCart={(product, size) => handleAddToCart(product, size || 'M')}
+            onToggleWishlist={handleToggleWishlist}
+            wishlistIds={wishlistIds}
+            darkMode={isDark}
+          />
         )}
 
         {currentPage === 'sale' && (
-          <div className="pt-28 pb-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8">
-            <div
-              className={`rounded-3xl p-6 sm:p-10 border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
-                isDark
-                  ? 'bg-gradient-to-r from-emerald-500/15 via-zinc-900 to-black border-emerald-500/30 text-white'
-                  : 'bg-gradient-to-r from-emerald-500/15 via-emerald-50 to-white border-emerald-500/40 text-slate-900'
-              }`}
-            >
-              <div>
-                <span className="px-3 py-1 rounded-full text-xs font-bold font-mono bg-emerald-500 text-black uppercase">
-                  End of Season Vault
-                </span>
-                <h1 className="font-gothic text-4xl sm:text-5xl mt-3 text-emerald-600 dark:text-emerald-400">
-                  Archival Warehouse Clearance
-                </h1>
-                <p className="text-xs sm:text-sm mt-1 text-slate-600 dark:text-zinc-400">
-                  Limited deadstock and overstock items discounted for Nyüku Club members.
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="text-3xl font-extrabold font-mono">UP TO 30% OFF</p>
-                <p className="text-xs text-slate-600 dark:text-zinc-400">
-                  Discount calculated in bag.
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-              {PRODUCTS.filter(
-                (p) =>
-                  p.title.includes('Cup') ||
-                  p.title.includes('Tumbler') ||
-                  p.price === 'R480' ||
-                  p.price === 'R320'
-              ).map((product) => (
-                <div
-                  key={product.id}
-                  onClick={() => handleOpenProduct(product)}
-                  className={`group rounded-2xl border p-3 sm:p-4 flex flex-col justify-between transition-all cursor-pointer ${
-                    isDark
-                      ? 'bg-zinc-950 border-emerald-500/30 hover:border-emerald-400'
-                      : 'bg-white border-emerald-500/40 hover:border-emerald-500 shadow-sm'
-                  }`}
-                >
-                  <div
-                    className={`relative aspect-square rounded-xl overflow-hidden mb-3 ${
-                      isDark ? 'bg-zinc-900' : 'bg-slate-100'
-                    }`}
-                  >
-                    <img
-                      src={product.images.front}
-                      alt={product.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                    />
-                    <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500 text-black uppercase">
-                      Vault Deal
-                    </span>
-                  </div>
-                  <div>
-                    <h3 className="text-xs sm:text-sm font-semibold line-clamp-1">{product.title}</h3>
-                    <p className="font-mono font-bold text-emerald-600 dark:text-emerald-400 mt-1">{product.price}</p>
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleAddToCart(product);
-                    }}
-                    className="mt-3 w-full py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold uppercase transition-colors"
-                  >
-                    Claim Deal
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
+          <Shop
+            onAddToCart={(product, size) => handleAddToCart(product, size || 'M')}
+            onToggleWishlist={handleToggleWishlist}
+            wishlistIds={wishlistIds}
+            darkMode={isDark}
+          />
         )}
 
         {currentPage === 'about' && (
           <About
-            onNavigateShop={() => setCurrentPage('shop')}
+            onNavigateShop={() => handleNavigate('shop')}
             isDark={isDark}
           />
         )}
@@ -1048,9 +883,11 @@ export function App() {
         {currentPage === 'profile' && (
           <Profile
             onAddToCart={handleAddToCart}
-            onNavigateShop={() => setCurrentPage('shop')}
+            onNavigateShop={() => handleNavigate('shop')}
             isDark={isDark}
             onToggleTheme={handleToggleTheme}
+            wishlistIds={wishlistIds}
+            onToggleWishlist={handleToggleWishlist}
           />
         )}
       </main>
@@ -1060,6 +897,8 @@ export function App() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onAddToCart={handleAddToCart}
+        isWishlisted={selectedProduct ? wishlistIds.includes(Number(selectedProduct.id)) : false}
+        onToggleWishlist={handleToggleWishlist}
       />
 
       <AuthModal
@@ -1076,20 +915,13 @@ export function App() {
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveFromCart}
         tier="gold"
+        isDark={isDark}
       />
 
-      <footer
-        className={`border-t py-8 px-4 text-center text-xs transition-colors ${
-          isDark ? 'border-zinc-900 text-zinc-500 bg-black/60' : 'border-slate-200 text-slate-500 bg-white/60'
-        }`}
-      >
-        <p className={`font-gothic text-base tracking-widest ${isDark ? 'text-zinc-400' : 'text-slate-700'}`}>
-          NYÜKU • ROOTED IN ZEBEDIELA, LIMPOPO
-        </p>
-        <p className="mt-1 font-mono text-[11px]">
-          © 2026 The Nyüku Club. Rooted and Established in Limpopo. All Rights Reserved.
-        </p>
-      </footer>
+      <Footer
+        onNavigate={handleNavigate}
+        isDark={isDark}
+      />
     </div>
   );
 }
